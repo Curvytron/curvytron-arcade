@@ -1,13 +1,10 @@
 /**
  * Radio
- *
- * @param {Profile} profile
  */
-function Radio (profile)
+function Radio()
 {
-    this.profile = profile;
     this.active  = false;
-    this.enabled = this.profile.radio;
+    this.enabled = true;
     this.element = this.getVideo();
 
     this.toggle = this.toggle.bind(this);
@@ -67,8 +64,6 @@ Radio.prototype.toggle = function ()
 Radio.prototype.setEnabled = function(enabled)
 {
     this.enabled = enabled ? true : false;
-
-    this.profile.setRadio(this.enabled);
     this.resolve();
 };
 

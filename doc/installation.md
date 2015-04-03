@@ -7,7 +7,7 @@ You need to install node on the machine that will run the Curvytron server.
 
 __Clone the repository__
 
-    git clone https://github.com/Elao/curvytron.git
+    git clone https://github.com/Elao/curvytron-arcade.git
     cd curvytron
 
 __Install dependencies__
@@ -25,4 +25,4 @@ __Build the game__
 ## Play
 
 Go to [http://localhost:8080/](http://localhost:8080/)
-Join a room, choose a player name and play!
+Plug in the gamepads and press the A button on each one.

@@ -1,12 +1,9 @@
 /**
  * Sound Manager
- *
- * @param {Profile} profile
  */
-function SoundManager (profile)
+function SoundManager ()
 {
-    this.profile = profile;
-    this.active  = this.profile.sound;
+    this.active = true;
 
     this.toggle = this.toggle.bind(this);
 
@@ -79,7 +76,6 @@ SoundManager.prototype.setActive = function(active)
 {
     this.active = active ? true : false;
     this.setVolume(this.active ? this.volume : 0);
-    this.profile.setSound(this.active);
 };
 
 /**

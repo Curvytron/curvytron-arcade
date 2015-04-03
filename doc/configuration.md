@@ -9,7 +9,6 @@ Details of `config.json`:
 ```json
 {
     "port": 8080,
-    "googleAnalyticsId": null,
     "inspector": {
         "enabled": false,
         "host": "127.0.0.1",
@@ -26,7 +25,6 @@ Details of `config.json`:
 | Variable | Description | Default value | Type | Required |
 | -------- | ----------- | ------------- | ---- | -------- |
 | port | The port on wich Curvytron server will run | 8080 | Number | Required |
-| googleAnalyticsId | Google Analytics Identifier | null | String | Optional |
 
 __Inspector:__
 

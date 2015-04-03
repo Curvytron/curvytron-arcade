@@ -3,11 +3,11 @@
  *
  * @param {String} name
  */
-function Room(name)
+function Room(name, controller)
 {
     BaseRoom.call(this, name);
 
-    this.controller = new RoomController(this);
+    this.controller = controller;
 }
 
 Room.prototype = Object.create(BaseRoom.prototype);

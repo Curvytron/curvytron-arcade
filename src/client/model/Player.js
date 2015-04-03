@@ -33,7 +33,6 @@ Player.prototype.constructor = Player;
 Player.prototype.setLocal = function(local)
 {
     this.local = local;
-
     this.initControls();
 };
 
@@ -42,6 +41,7 @@ Player.prototype.setLocal = function(local)
  */
 Player.prototype.initControls = function()
 {
+    console.log('initControls');
     if (!this.controls) {
         this.controls = [
             new PlayerControl(37, 'icon-left-dir'),
@@ -51,6 +51,8 @@ Player.prototype.initControls = function()
         for (var i = this.controls.length - 1; i >= 0; i--) {
             this.controls[i].on('change', this.onControlChange);
         }
+
+        console.log(this.controls);
     }
 };
 

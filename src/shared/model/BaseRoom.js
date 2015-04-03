@@ -103,6 +103,7 @@ BaseRoom.prototype.newGame = function()
  */
 BaseRoom.prototype.closeGame = function()
 {
+    console.log('closeGame');
     if (this.game) {
 
         delete this.game;
@@ -131,10 +132,6 @@ BaseRoom.prototype.serialize = function(full)
         players: full ? this.players.map(function () { return this.serialize(); }).items : this.players.count(),
         game: this.game ? true : false
     };
-
-    if (full) {
-        data.config = this.config.serialize();
-    }
 
     return data;
 };

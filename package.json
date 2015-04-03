@@ -1,7 +1,7 @@
 {
   "name": "curvytron",
   "version": "1.4.3",
-  "description": "A web multiplayer Tron game like... with curves!",
+  "description": "A standalone arcade fork of Curvytron meant to be played IRL at events and parties.",
   "keywords": [
     "tron",
     "game",

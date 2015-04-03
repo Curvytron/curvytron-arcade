@@ -10,8 +10,7 @@ function Server(config)
     this.server  = new http.Server(this.app);
     this.clients = new Collection([], 'id', true);
 
-    this.roomRepository  = new RoomRepository();
-    this.roomsController = new RoomsController(this.roomRepository);
+    this.roomController = new RoomController();
 
     this.authorizationHandler  = this.authorizationHandler.bind(this);
     this.onSocketConnection    = this.onSocketConnection.bind(this);
@@ -43,7 +42,6 @@ Server.prototype.authorizationHandler = function(request, socket, head)
         return socket.end();
     }
 
-
     var websocket = new WebSocket(request, socket, head, ['websocket'], {ping: 30}),
         ip = request.headers['x-real-ip'] || request.connection.remoteAddress;
 
@@ -62,7 +60,7 @@ Server.prototype.onSocketConnection = function(socket, ip)
     this.clients.add(client);
 
     client.on('close', this.onSocketDisconnection);
-    this.roomsController.attach(client);
+    this.roomController.attach(client);
     this.emit('client', client);
 
     console.info('Client %s connected.', client.id);

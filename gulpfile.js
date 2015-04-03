@@ -17,7 +17,7 @@ var fs        = require('fs'),
     try {
         config = require('./config.json');
     } catch (error) {
-        config = { googleAnalyticsId: null };
+        config = {};
     }
 
     var jsDir   = './web/js/',
@@ -86,17 +86,8 @@ gulp.task('front-min', function(){
         .pipe(gulp.dest(recipes.client.path));
 });
 
-gulp.task('ga', function() {
-    var source = gulp.src('./src/client/views/index.html');
-
-    if (typeof(config.googleAnalyticsId) !== 'undefined' && config.googleAnalyticsId) {
-        var tag = fs.readFileSync('./src/client/views/google.analytics.html').toString()
-            .replace('GoogleAnalyticsToken', config.googleAnalyticsId);
-
-        source.pipe(replace('<!-- Google Analytics -->', tag));
-    }
-
-    return source
+gulp.task('index', function() {
+    return gulp.src('./src/client/views/index.html')
         .pipe(htmlmin({collapseWhitespace: true}))
         .pipe(gulp.dest('./web'));
 });
@@ -137,9 +128,9 @@ gulp.task('copy-stress-test', function() {
 
 gulp.task('watch', ['dev'], function () {
     gulp.watch('src/**/*.js', ['jshint', 'server', 'front-full']);
-    gulp.watch('src/client/views/**/*', ['views']);
+    gulp.watch('src/client/views/**/*', ['views', 'index']);
     gulp.watch('src/**/*.scss', ['sass-full']);
 });
 
-gulp.task('default', ['jshint', 'server', 'front-expose', 'ga', 'views', 'front-min', 'sass-min']);
-gulp.task('dev', ['jshint', 'server', 'front-expose', 'copy-stress-test', 'ga', 'views', 'front-full', 'sass-full']);
+gulp.task('default', ['jshint', 'server', 'front-expose', 'views', 'index', 'front-min', 'sass-min']);
+gulp.task('dev', ['jshint', 'server', 'front-expose', 'copy-stress-test', 'views', 'index', 'front-full', 'sass-full']);

@@ -1,17 +1,11 @@
-Curvytron
-=========
+Curvytron: Arcade
+=================
 
-A web multiplayer Tron game like with curves
+A standalone arcade fork of [Curvytron](https://github.com/Elao/curvytron) meant to be played IRL at events and parties.
 
 ## Installation
 
 * [Get you local Curvytron server in 1 minute!](doc/installation.md)
-
----
-
-## Wann help?
-
-* [See how you can make the game better](doc/contribution.md)
 * [Setup you development environment](doc/dev.md)
 
 ---
