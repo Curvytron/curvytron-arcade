@@ -46,6 +46,8 @@ function GameController($scope, $routeParams, $location, client, repository, sou
     this.onEnd           = this.onEnd.bind(this);
     this.onExit          = this.onExit.bind(this);
     this.updateBorders   = this.updateBorders.bind(this);
+    this.countGoBack       = this.countGoBack.bind(this);
+    this.listenGoBack      = this.listenGoBack.bind(this);
     this.onGamepadButton = this.onGamepadButton.bind(this);
 
     // Hydrate scope:
@@ -58,10 +60,18 @@ function GameController($scope, $routeParams, $location, client, repository, sou
     this.$scope.roundWinner = null;
     this.$scope.gameWinner  = null;
     this.$scope.latency     = 0;
+    this.$scope.goBack      = false;
 
     this.repository.start();
     this.loadGame(this.repository.room);
 }
+
+/**
+ * Time before go back to the game
+ *
+ * @type {Number}
+ */
+GameController.prototype.goBackTime = 5000;
 
 /**
  * Attach socket Events
@@ -424,8 +434,7 @@ GameController.prototype.onEnd = function(e)
     this.$scope.end        = true;
     this.$scope.phase      = 'game';
 
-    gamepadListener.on('gamepad:button', this.onGamepadButton);
-
+    this.setGoBack();
     this.applyScope();
     this.close();
 };
@@ -479,10 +488,6 @@ GameController.prototype.updateBorders = function()
  */
 GameController.prototype.onExit = function()
 {
-    /*if ((this.room && this.$location.path() !== this.room.url) || (this.game && this.game.started)) {
-        this.repository.leave();
-    }*/
-
     this.killLog.clear();
     this.sound.stop('win');
     this.offDestroy();
@@ -524,13 +529,46 @@ GameController.prototype.onLatency = function(event)
 };
 
 /**
+ * Set go back timeout
+ */
+GameController.prototype.setGoBack = function()
+{
+    this.$scope.goBack  = this.goBackTime/1000;
+    this.goBackInterval = setInterval(this.countGoBack, 1000);
+    this.goBackTimeout  = setTimeout(this.listenGoBack, this.goBackTime);
+};
+
+/**
+ * Count before go back
+ */
+GameController.prototype.countGoBack = function()
+{
+    if (this.$scope.goBack) {
+        this.$scope.goBack--;
+        this.applyScope();
+    }
+};
+
+/**
+ * Listen for back button
+ */
+GameController.prototype.listenGoBack = function()
+{
+    this.goBackInterval = clearInterval(this.goBackInterval);
+    this.goBackTimeout  = clearTimeout(this.goBackTimeout);
+    this.$scope.goBack  = true;
+    gamepadListener.on('gamepad:button', this.onGamepadButton);
+    this.applyScope();
+};
+
+/**
  * On gamepad button pressed
  *
  * @param {Event} e
  */
 GameController.prototype.onGamepadButton = function(e)
 {
-    if (this.$scope.end && e.detail.value) {
+    if (this.$scope.goBack) {
         gamepadListener.off('gamepad:button', this.onGamepadButton);
         this.backToRoom();
     }

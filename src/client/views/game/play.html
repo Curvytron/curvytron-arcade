@@ -63,7 +63,6 @@
                         </span>
                         won the game!
                     </p>
-                    <p>Press any button to play again!</p>
                     <table class="table table-hover recap">
                         <tbody>
                             <tr ng-repeat="avatar in game.avatars.items | orderBy:sortorder">
@@ -73,6 +72,10 @@
                             </tr>
                         </tbody>
                     </table>
+                    <p class="go-back" ng-if="goBack">
+                        <span ng-if="goBack !== true">{{ goBack }}...</span>
+                        <span ng-if="goBack === true">Press any button to play again!</span>
+                    </p>
                 </section>
             </section>
             <div id="render" class="game-render {{ borderless ? 'borderless' : '' }}">

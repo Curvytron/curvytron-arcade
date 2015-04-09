@@ -182,7 +182,7 @@ RoomController.prototype.addPlayer = function(index, gamepad)
                 controller.applyScope();
             } else {
                 var error = typeof(result.error) !== 'undefined' ? result.error : 'Unknown error';
-                console.error('Could not add player %s: %s', name, error);
+                console.error('Could not add player %s: %s', index, error);
             }
         }
     );
@@ -208,7 +208,7 @@ RoomController.prototype.removePlayer = function(index)
                 controller.players[index] = null;
                 controller.applyScope();
             } else {
-                console.error('Could not remove player %s', player.name);
+                console.error('Could not remove player %s', index);
             }
         }
     );
@@ -241,7 +241,7 @@ RoomController.prototype.toggleReady = function(index)
         this.players[index].id,
         function (result) {
             if (!result.success) {
-                console.error('Could not set player %s ready', player.name);
+                console.error('Could not set player %s ready', index);
             }
         }
     );
