@@ -5,7 +5,6 @@ gamepadListener.start();
 
 curvytronApp.service('SocketClient', SocketClient);
 curvytronApp.service('RoomRepository', ['SocketClient', RoomRepository]);
-curvytronApp.service('Radio', Radio);
 curvytronApp.service('SoundManager', SoundManager);
 curvytronApp.service('KillLog', KillLog);
 
@@ -19,7 +18,7 @@ curvytronApp.controller(
 );
 curvytronApp.controller(
     'GameController',
-    ['$scope', '$routeParams', '$location', 'SocketClient', 'RoomRepository', 'Radio', 'SoundManager', 'KillLog', GameController]
+    ['$scope', '$routeParams', '$location', 'SocketClient', 'RoomRepository', 'SoundManager', 'KillLog', GameController]
 );
 curvytronApp.controller(
     'KillLogController',

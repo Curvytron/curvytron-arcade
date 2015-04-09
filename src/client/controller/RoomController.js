@@ -26,17 +26,36 @@ function RoomController($scope, $routeParams, $location, client, repository)
 
     // Hydrating scope:
     this.$scope.curvytron.bodyClass = null;
+    this.$scope.players             = this.players;
 
     this.repository.start();
     this.launch();
 }
 
 /**
- * Gamepads controls for players
+ * Start button index
+ *
+ * @type {Number}
+ */
+RoomController.prototype.startButton = 9;
+
+/**
+ * Player profiles
  *
  * @type {Array}
  */
-RoomController.prototype.controls = ['button:4', 'button:5'];
+RoomController.prototype.profiles = [
+    {name: 'PHP', color: '#6664A7'},
+    {name: 'Python', color: '#F9CF25'},
+    {name: 'Ruby', color: '#840A16'},
+    {name: 'Javascript', color: '#80bd01'},
+    {name: 'Go', color: '#63CEE0'},
+    {name: 'Java', color: '#DA5D00'},
+    {name: 'Perl', color: '#1189BD'},
+    {name: 'Sass', color: '#c6538c'},
+    {name: 'Rust', color: '#B87038'},
+    {name: 'COBOL', color: '#000000'}
+];
 
 /**
  * Launche the room
@@ -55,14 +74,6 @@ RoomController.prototype.launch = function()
         player = this.repository.room.players.items[i];
         if (typeof(player.index) !== 'undefined') {
             this.assignPlayer(player.index, player);
-        }
-    }
-
-    var gamepads = gamepadListener.getGamepads();
-
-    for (var i = 0; i < 4; i++) {
-        if (typeof(gamepads[i]) !== 'undefined' && !this.players[i]) {
-            this.addPlayer(i, gamepads[i]);
         }
     }
 };
@@ -127,7 +138,27 @@ RoomController.prototype.onGamepadDisconnected = function(e)
 RoomController.prototype.onGamepadButton = function(e)
 {
     if (e.detail.value) {
-        this.setReady(e.detail.gamepad.index);
+        if (e.detail.index === this.startButton) {
+            this.togglePlayer(e.detail.gamepad.index);
+        } else {
+            this.toggleReady(e.detail.gamepad.index);
+        }
+    }
+};
+
+/**
+ * Toogle player
+ *
+ * @param {Number} index
+ */
+RoomController.prototype.togglePlayer = function(index)
+{
+    if (this.players[index]) {
+        this.removePlayer(index);
+    } else {
+        var gamepads = gamepadListener.getGamepads();
+
+        this.addPlayer(index, gamepads[index]);
     }
 };
 
@@ -139,11 +170,12 @@ RoomController.prototype.onGamepadButton = function(e)
  */
 RoomController.prototype.addPlayer = function(index, gamepad)
 {
-    var controller = this;
+    var controller = this,
+        profile = this.getRandomProfile();
 
     this.repository.addPlayer(
-        'Player ' + (index+1),
-        null,
+        profile.name,
+        profile.color,
         function (result) {
             if (result.success) {
                 controller.assignPlayer(index, result.player);
@@ -174,6 +206,7 @@ RoomController.prototype.removePlayer = function(index)
         function (result) {
             if (result.success) {
                 controller.players[index] = null;
+                controller.applyScope();
             } else {
                 console.error('Could not remove player %s', player.name);
             }
@@ -191,13 +224,6 @@ RoomController.prototype.assignPlayer = function(index, player)
 {
     this.players[index] = player;
     player.index        = index;
-
-    for (var i = player.controls.length - 1; i >= 0; i--) {
-        player.controls[i].loadMapping({
-            mapper: 'gamepad',
-            value: 'gamepad:' + index + ':' + this.controls[i]
-        });
-    }
 };
 
 /**
@@ -205,7 +231,7 @@ RoomController.prototype.assignPlayer = function(index, player)
  *
  * @return {Array}
  */
-RoomController.prototype.setReady = function(index)
+RoomController.prototype.toggleReady = function(index)
 {
     if (typeof(this.players[index]) === 'undefined' || !this.players[index]) {
         return;
@@ -235,6 +261,22 @@ RoomController.prototype.onJoin = function(e)
     }
 
     this.applyScope();
+};
+
+/**
+ * Get random profile
+ *
+ * @return {Object}
+ */
+RoomController.prototype.getRandomProfile = function()
+{
+    var profile = this.profiles[Math.floor(Math.random() * this.profiles.length)];
+
+    while (!this.repository.room.isNameAvailable(profile.name)) {
+        profile = this.profiles[Math.floor(Math.random() * this.profiles.length)];
+    }
+
+    return profile;
 };
 
 /**

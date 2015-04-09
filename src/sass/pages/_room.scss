@@ -98,82 +98,34 @@
 
     .room-players {
         width: 100%;
-        border-collapse: separate;
 
-        th {
-            text-transform: uppercase;
-            color: transparentize($text-color, 0.5);
-            font-weight: 400;
-            height: 40px !important;
-            border-bottom: 0;
+        .slot {
+            width: 48%;
+            margin: 2%;
+            padding: 0;
+            float: left;
 
-            &.col-ready {
-                text-align: center;
-                padding-left: 45px;
+            &:nth-child(even) {
+                margin-right: 0;
             }
-        }
 
-        >tbody >tr {
-            >td {
-                overflow: hidden;
-                height: 60px;
-                min-height: 60px;
-                max-height: 60px;
+            &:nth-child(odd) {
+                margin-left: 0;
+            }
+
+            .empty, .player {
+                padding: 5px;
+                padding: 5px;
+                height: 100px;
+            }
+
+            .player {
+                color: #ffffff;
+            }
+
+            .empty {
                 background-color: #ffffff;
-
-                &.col-player {
-                    font-weight: bold;
-
-                    .inactive {
-                        padding-top: 7px;
-                        color: lighten($text-color, 25%);
-                    }
-                }
-
-                &.col-ready {
-                    padding: 0;
-                }
-
-                &.empty {
-                  background-color: none;
-                  text-align: center;
-                }
             }
-
-            &.local {
-                .player-ready {
-                    cursor: pointer;
-
-                    &:hover {
-                        background: darken($background-color, 12%);
-                    }
-                }
-            }
-        }
-
-    }
-
-    .col-color {
-        position: relative;
-        // padding-left: 20px;
-
-        .line-color-preview {
-            width: 12px;
-            position: absolute;
-            left: 12px;
-            top: 10px;
-            bottom: 10px;
-        }
-
-        .form-control {
-            height: 40px;
-            border-left-width: 12px;
-        }
-
-        p {
-            margin: 0;
-            padding-left: 22px;
-            font-weight: 400;
         }
     }
 
@@ -189,7 +141,6 @@
         color: #FFF;
         text-align: center;
         @include transition(all 0.2s ease);
-        @include skew(-10deg, 0);
         -webkit-backface-visibility: hidden;
         -webkit-user-select: none;
         -moz-user-select: none;
@@ -227,7 +178,6 @@
             text-transform: uppercase;
             font-size: 20px;
             color: $text-color;
-            @include skew(10deg, 0);
             @include transition(all 0.2s linear);
             -webkit-backface-visibility: hidden;
         }

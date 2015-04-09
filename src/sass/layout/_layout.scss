@@ -5,6 +5,7 @@ body {
   line-height: $base-line-height;
   color: $text-color;
   font-weight: $base-font-weight;
+  padding-bottom: 92px;
 }
 
 ::selection {
@@ -51,6 +52,13 @@ header {
   border-bottom: 10px solid #FFF;
   position: relative;
   @include gradient($header-background-from, $header-background-to);
+
+  .links {
+    position: absolute;
+    a {
+      display: block;
+    }
+  }
 
   .logo {
     z-index: 10;
@@ -122,7 +130,9 @@ footer {
   background: $footer-background;
   color: $footer-color;
   padding: 30px 0;
-  margin-top: 30px;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
 
   a {
     cursor: pointer;

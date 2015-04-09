@@ -13,10 +13,7 @@ function Avatar(player)
     this.start     = new Array(2);
     this.width     = this.radius * 2;
     this.animation = null;
-
-    if (this.local) {
-        this.input = new PlayerInput(this, player.getBinding());
-    }
+    this.input     = new PlayerInput(this, player.index);
 
     this.clearAnimation = this.clearAnimation.bind(this);
 
@@ -177,11 +174,8 @@ Avatar.prototype.destroy = function()
     this.trail.clear();
     this.canvas.clear();
     this.arrow.clear();
-
-    if (this.input) {
-        this.input.detachEvents();
-        this.input = null;
-    }
+    this.input.detachEvents();
+    this.input = null;
 
     BaseAvatar.prototype.destroy.call(this);
 };

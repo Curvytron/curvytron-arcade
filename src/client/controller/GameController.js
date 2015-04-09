@@ -5,17 +5,15 @@
  * @param {Object} $routeParams
  * @param {SocketClient} client
  * @param {RoomRepository} repository
- * @param {Radio} radio
  * @param {SoundManager} sound
  * @param {killLog} killLog
  */
-function GameController($scope, $routeParams, $location, client, repository, radio, sound, killLog)
+function GameController($scope, $routeParams, $location, client, repository, sound, killLog)
 {
     this.$scope         = $scope;
     this.$location      = $location;
     this.client         = client;
     this.repository     = repository;
-    this.radio          = radio;
     this.killLog        = killLog;
     this.sound          = sound;
     this.room           = null;
@@ -138,7 +136,6 @@ GameController.prototype.loadGame = function(room)
     }
 
     this.game.fps.setElement(document.getElementById('fps'));
-    this.radio.setActive(true);
 
     // Hydrate scope:
     this.$scope.curvytron.bodyClass = 'game-mode';
@@ -482,10 +479,13 @@ GameController.prototype.updateBorders = function()
  */
 GameController.prototype.onExit = function()
 {
-    this.killLog.clear();
+    /*if ((this.room && this.$location.path() !== this.room.url) || (this.game && this.game.started)) {
+        this.repository.leave();
+    }*/
 
-    this.radio.setActive(false);
+    this.killLog.clear();
     this.sound.stop('win');
+    this.offDestroy();
     this.close();
 };
 

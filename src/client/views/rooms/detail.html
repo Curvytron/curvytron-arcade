@@ -5,42 +5,24 @@
             <p>Stay alive longer than your oponnents to score points!</p>
         </div>
         <div class="room-details">
-            <table class="room-players table v-align-middle">
-                <thead>
-                    <tr>
-                        <th class="col-player">Name</th>
-                        <th class="col-color">Gamepad</th>
-                        <th class="col-color">Color</th>
-                        <th class="col-ready">Ready?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-if="room.players.isEmpty()">
-                        <td colspan="5" class="empty">
-                            Waiting for players...
-                        </th>
-                    </tr>
-                    <tr ng-repeat="player in room.players.items">
-                        <td class="col-player">
-                            <p class="player-name">{{ player.name }}</p>
-                        </td>
-                        <td class="col-gamepad">
-                            <p>{{ player.index + 1 }}</p>
-                        </td>
-                        <td class="col-color">
-                            <span class="line-color-preview" style="background-color: {{ player.color }};"></span>
-                        </td>
-                        <td class="col-ready">
-                            <div class="player-ready" ng-class="{ ready: player.ready }">
-                                <span>
-                                    <i ng-if="player.ready" class="icon-check success"></i>
-                                    <i ng-if="!player.ready" class="icon-close success"></i>
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="room-players">
+                <div ng-repeat="(index, player) in players" class="slot">
+                    <div ng-if="player" class="player" style="background-color: {{ player.color }};">
+                        <span class="gamepad">{{ player.index + 1 }}</span>
+                        <p class="player-name">{{ player.name }}</p>
+                        <div class="player-ready" ng-class="{ ready: player.ready }">
+                            <span>
+                                <i ng-if="player.ready" class="icon-check success"></i>
+                                <i ng-if="!player.ready" class="icon-close success"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div ng-if="!player" class="empty">
+                        <span class="gamepad">{{ $index + 1 }}</span>
+                        <p>Press start to join!</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>

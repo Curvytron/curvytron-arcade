@@ -156,7 +156,7 @@ BaseRoomConfig.prototype.getMaxScore = function()
  */
 BaseRoomConfig.prototype.getDefaultMaxScore = function()
 {
-    return 1;//Math.max(1, (this.room.players.count() - 1) * 10);
+    return Math.max(1, (this.room.players.count() - 1) * 10);
 };
 
 /**
