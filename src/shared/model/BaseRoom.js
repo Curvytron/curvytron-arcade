@@ -103,9 +103,7 @@ BaseRoom.prototype.newGame = function()
  */
 BaseRoom.prototype.closeGame = function()
 {
-    console.log('closeGame');
     if (this.game) {
-
         delete this.game;
 
         this.emit('game:end', {room: this});

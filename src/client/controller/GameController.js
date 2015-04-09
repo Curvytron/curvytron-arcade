@@ -26,30 +26,29 @@ function GameController($scope, $routeParams, $location, client, repository, rad
     this.compressor     = new Compressor();
 
     // Binding
-    this.onLatency      = this.onLatency.bind(this);
-    this.onGameStart    = this.onGameStart.bind(this);
-    this.onGameStop     = this.onGameStop.bind(this);
-    this.onReady        = this.onReady.bind(this);
-    this.onAssetsLoaded = this.onAssetsLoaded.bind(this);
-    this.onMove         = this.onMove.bind(this);
-    this.onBonusPop     = this.onBonusPop.bind(this);
-    this.onBonusClear   = this.onBonusClear.bind(this);
-    this.onBonusStack   = this.onBonusStack.bind(this);
-    this.onPosition     = this.onPosition.bind(this);
-    this.onPoint        = this.onPoint.bind(this);
-    this.onDie          = this.onDie.bind(this);
-    this.onProperty     = this.onProperty.bind(this);
-    this.onWarmup       = this.onWarmup.bind(this);
-    this.endWarmup      = this.endWarmup.bind(this);
-    this.onRoundNew     = this.onRoundNew.bind(this);
-    this.onRoundEnd     = this.onRoundEnd.bind(this);
-    this.onRoundWinner  = this.onRoundWinner.bind(this);
-    this.onClear        = this.onClear.bind(this);
-    this.onEnd          = this.onEnd.bind(this);
-    this.onLeave        = this.onLeave.bind(this);
-    this.onUnload       = this.onUnload.bind(this);
-    this.onExit         = this.onExit.bind(this);
-    this.updateBorders  = this.updateBorders.bind(this);
+    this.onLatency       = this.onLatency.bind(this);
+    this.onGameStart     = this.onGameStart.bind(this);
+    this.onGameStop      = this.onGameStop.bind(this);
+    this.onReady         = this.onReady.bind(this);
+    this.onAssetsLoaded  = this.onAssetsLoaded.bind(this);
+    this.onMove          = this.onMove.bind(this);
+    this.onBonusPop      = this.onBonusPop.bind(this);
+    this.onBonusClear    = this.onBonusClear.bind(this);
+    this.onBonusStack    = this.onBonusStack.bind(this);
+    this.onPosition      = this.onPosition.bind(this);
+    this.onPoint         = this.onPoint.bind(this);
+    this.onDie           = this.onDie.bind(this);
+    this.onProperty      = this.onProperty.bind(this);
+    this.onWarmup        = this.onWarmup.bind(this);
+    this.endWarmup       = this.endWarmup.bind(this);
+    this.onRoundNew      = this.onRoundNew.bind(this);
+    this.onRoundEnd      = this.onRoundEnd.bind(this);
+    this.onRoundWinner   = this.onRoundWinner.bind(this);
+    this.onClear         = this.onClear.bind(this);
+    this.onEnd           = this.onEnd.bind(this);
+    this.onExit          = this.onExit.bind(this);
+    this.updateBorders   = this.updateBorders.bind(this);
+    this.onGamepadButton = this.onGamepadButton.bind(this);
 
     // Hydrate scope:
     this.$scope.sortorder   = '-score';
@@ -58,24 +57,13 @@ function GameController($scope, $routeParams, $location, client, repository, rad
     this.$scope.end         = false;
     this.$scope.tieBreak    = false;
     this.$scope.borderless  = false;
-    this.$scope.radio       = this.radio;
-    this.$scope.sound       = this.sound;
     this.$scope.roundWinner = null;
     this.$scope.gameWinner  = null;
-    this.$scope.spectating  = false;
-    this.$scope.spectators  = 0;
     this.$scope.latency     = 0;
 
     this.repository.start();
     this.loadGame(this.repository.room);
 }
-
-/**
- * Confirmation message
- *
- * @type {String}
- */
-GameController.prototype.confirmation = 'Are you sure you want to leave the game?';
 
 /**
  * Attach socket Events
@@ -98,7 +86,6 @@ GameController.prototype.attachSocketEvents = function()
     this.client.on('round:winner', this.onRoundWinner);
     this.client.on('clear', this.onClear);
     this.client.on('end', this.onEnd);
-    this.client.on('game:leave', this.onLeave);
 };
 
 /**
@@ -122,7 +109,6 @@ GameController.prototype.detachSocketEvents = function()
     this.client.off('round:winner', this.onRoundWinner);
     this.client.off('clear', this.onClear);
     this.client.off('end', this.onEnd);
-    this.client.off('game:leave', this.onLeave);
 };
 
 /**
@@ -132,9 +118,7 @@ GameController.prototype.detachSocketEvents = function()
  */
 GameController.prototype.loadGame = function(room)
 {
-    this.offUnload        = this.$scope.$on('$locationChangeStart', this.onUnload);
-    this.offDestroy       = this.$scope.$on('$destroy', this.onExit);
-    window.onbeforeunload = this.onUnload;
+    this.offDestroy = this.$scope.$on('$destroy', this.onExit);
 
     this.room = room;
     this.game = room.newGame();
@@ -443,6 +427,8 @@ GameController.prototype.onEnd = function(e)
     this.$scope.end        = true;
     this.$scope.phase      = 'game';
 
+    gamepadListener.on('gamepad:button', this.onGamepadButton);
+
     this.applyScope();
     this.close();
 };
@@ -496,47 +482,11 @@ GameController.prototype.updateBorders = function()
  */
 GameController.prototype.onExit = function()
 {
-    if ((this.room && this.$location.path() !== this.room.url) || (this.game && this.game.started)) {
-        this.repository.leave();
-        this.chat.clear();
-        this.killLog.clear();
-    }
-
-    window.onbeforeunload = null;
+    this.killLog.clear();
 
     this.radio.setActive(false);
     this.sound.stop('win');
-    this.offUnload();
-    this.offDestroy();
     this.close();
-};
-
-/**
- * On unload
- *
- * @param {Event} e
- *
- * @return {String}
- */
-GameController.prototype.onUnload = function(e)
-{
-    if (this.needConfirmation()) {
-        if (e.type === 'beforeunload') {
-            return this.confirmation;
-        } else if (!confirm(this.confirmation)) {
-            return e.preventDefault();
-        }
-    }
-};
-
-/**
- * Do we need confirmation before leaving?
- *
- * @return {Boolean}
- */
-GameController.prototype.needConfirmation = function()
-{
-    return !this.$scope.spectating && !this.$scope.end;
 };
 
 /**
@@ -570,6 +520,28 @@ GameController.prototype.close = function()
 GameController.prototype.onLatency = function(event)
 {
     this.$scope.latency = event.detail[0];
+    this.applyScope();
+};
+
+/**
+ * On gamepad button pressed
+ *
+ * @param {Event} e
+ */
+GameController.prototype.onGamepadButton = function(e)
+{
+    if (this.$scope.end && e.detail.value) {
+        gamepadListener.off('gamepad:button', this.onGamepadButton);
+        this.backToRoom();
+    }
+};
+
+/**
+ * Go back to the room
+ */
+GameController.prototype.backToRoom = function()
+{
+    this.$location.path(this.room.url);
     this.applyScope();
 };
 

@@ -458,8 +458,6 @@ GameController.prototype.onClear = function(data)
  */
 GameController.prototype.onEnd = function(data)
 {
-    console.log('onEnd');
     this.socketGroup.addEvent('end');
     this.unloadGame();
-    console.log(this.room.game);
 };

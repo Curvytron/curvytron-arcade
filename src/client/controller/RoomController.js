@@ -47,18 +47,24 @@ RoomController.prototype.launch = function()
         return this.client.on('connected', this.launch);
     }
 
-    this.room        = this.repository.room;
-    this.$scope.room = this.room;
+    this.$scope.room = this.repository.room;
 
     this.attachEvents();
+
+    for (var player, i = this.repository.room.players.items.length - 1; i >= 0; i--) {
+        player = this.repository.room.players.items[i];
+        if (typeof(player.index) !== 'undefined') {
+            this.assignPlayer(player.index, player);
+        }
+    }
 
     var gamepads = gamepadListener.getGamepads();
 
     for (var i = 0; i < 4; i++) {
-        if (typeof(gamepads[i]) !== 'undefined') {
+        if (typeof(gamepads[i]) !== 'undefined' && !this.players[i]) {
             this.addPlayer(i, gamepads[i]);
         }
-    };
+    }
 };
 
 /**
@@ -71,7 +77,6 @@ RoomController.prototype.attachEvents = function(name)
     gamepadListener.on('gamepad:connected', this.onGamepadConnected);
     gamepadListener.on('gamepad:disconnected', this.onGamepadDisconnected);
     gamepadListener.on('gamepad:button', this.onGamepadButton);
-    gamepadListener.on('gamepad:axis', this.onGamepadButton);
     this.repository.on('player:join', this.onJoin);
     this.repository.on('player:leave', this.applyScope);
     this.repository.on('player:ready', this.applyScope);
@@ -88,14 +93,11 @@ RoomController.prototype.detachEvents = function(name)
     gamepadListener.off('gamepad:connected', this.onGamepadConnected);
     gamepadListener.off('gamepad:disconnected', this.onGamepadDisconnected);
     gamepadListener.off('gamepad:button', this.onGamepadButton);
-    gamepadListener.off('gamepad:axis', this.onGamepadButton);
     this.repository.off('player:join', this.onJoin);
     this.repository.off('player:leave', this.applyScope);
     this.repository.off('player:ready', this.applyScope);
     this.repository.off('room:game:start', this.start);
 };
-
-
 
 /**
  * On gamepad connected
@@ -124,7 +126,9 @@ RoomController.prototype.onGamepadDisconnected = function(e)
  */
 RoomController.prototype.onGamepadButton = function(e)
 {
-    this.setReady(e.detail.index);
+    if (e.detail.value) {
+        this.setReady(e.detail.gamepad.index);
+    }
 };
 
 /**
@@ -138,12 +142,12 @@ RoomController.prototype.addPlayer = function(index, gamepad)
     var controller = this;
 
     this.repository.addPlayer(
-        'Player ' + index,
+        'Player ' + (index+1),
         null,
         function (result) {
-            console.log('addPlayer callback:', result);
             if (result.success) {
                 controller.assignPlayer(index, result.player);
+                controller.applyScope();
             } else {
                 var error = typeof(result.error) !== 'undefined' ? result.error : 'Unknown error';
                 console.error('Could not add player %s: %s', name, error);
@@ -185,8 +189,8 @@ RoomController.prototype.removePlayer = function(index)
  */
 RoomController.prototype.assignPlayer = function(index, player)
 {
-    console.log('assignPlayer', player);
     this.players[index] = player;
+    player.index        = index;
 
     for (var i = player.controls.length - 1; i >= 0; i--) {
         player.controls[i].loadMapping({
@@ -240,6 +244,7 @@ RoomController.prototype.onJoin = function(e)
  */
 RoomController.prototype.start = function(e)
 {
+    this.detachEvents();
     this.$location.path('/play');
     this.applyScope();
 };

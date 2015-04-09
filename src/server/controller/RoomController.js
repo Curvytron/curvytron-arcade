@@ -37,7 +37,6 @@ RoomController.prototype.constructor = RoomController;
  */
 RoomController.prototype.attach = function(client)
 {
-    console.log('attach', client.id);
     if (this.clients.add(client)) {
         this.attachEvents(client);
         this.onClientAdd(client);
@@ -167,11 +166,11 @@ RoomController.prototype.onPlayerAdd = function(client, data, callback)
 
     var player = new Player(client, name, color);
 
-    this.room.addPlayer(player);
-    client.players.add(player);
-    console.log('success add');
-    callback({success: true, player: player.serialize()});
-    this.emit('player:add', { room: this.room, player: player});
+    if (this.room.addPlayer(player)) {
+        client.players.add(player);
+        callback({success: true, player: player.id});
+        this.emit('player:add', { room: this.room, player: player});
+    }
 };
 
 /**
@@ -225,7 +224,6 @@ RoomController.prototype.onReady = function(client, data, callback)
  */
 RoomController.prototype.onPlayerJoin = function(data)
 {
-    console.log('onPlayerJoin');
     this.socketGroup.addEvent('room:join', {player: data.player.serialize()});
 };
 

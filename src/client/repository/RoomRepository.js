@@ -60,20 +60,13 @@ RoomRepository.prototype.addPlayer = function(name, color, callback)
         color: color ? color.substr(0, Player.prototype.colorMaxLength) : null
     }, function (result) {
         if (result.success) {
-            var player = new Player(
-                result.player.id,
-                result.player.client,
-                result.player.name,
-                result.player.color,
-                result.player.ready
-            );
+            var player = repository.room.players.getById(result.player);
 
-            if (repository.room.addPlayer(player)) {
+            if (player) {
                 player.setLocal(true);
                 callback({success: true, player: player});
-                repository.emit('player:join', {player: player});
             } else {
-                callback({success: false});
+                callback({success: false, error: 'Could not add player to the room'});
             }
         } else {
             callback(result);
@@ -180,6 +173,18 @@ RoomRepository.prototype.onGameStart = function(e)
 RoomRepository.prototype.onGameEnd = function(e)
 {
     this.emit('room:game:end');
+};
+
+/**
+ * Leave
+ *
+ * @param {Function} callback
+ */
+RoomRepository.prototype.leave = function()
+{
+    this.client.addEvent('room:leave');
+    this.stop();
+    this.emit('room:leave');
 };
 
 /**

@@ -1,10 +1,15 @@
 <section>
     <div class="container room">
+        <div class="turorial">
+            <p>Control your snake with <kbd>LB</kbd> and <kbd>RB</kbd>.</p>
+            <p>Stay alive longer than your oponnents to score points!</p>
+        </div>
         <div class="room-details">
             <table class="room-players table v-align-middle">
                 <thead>
                     <tr>
                         <th class="col-player">Name</th>
+                        <th class="col-color">Gamepad</th>
                         <th class="col-color">Color</th>
                         <th class="col-ready">Ready?</th>
                     </tr>
@@ -18,6 +23,9 @@
                     <tr ng-repeat="player in room.players.items">
                         <td class="col-player">
                             <p class="player-name">{{ player.name }}</p>
+                        </td>
+                        <td class="col-gamepad">
+                            <p>{{ player.index + 1 }}</p>
                         </td>
                         <td class="col-color">
                             <span class="line-color-preview" style="background-color: {{ player.color }};"></span>
