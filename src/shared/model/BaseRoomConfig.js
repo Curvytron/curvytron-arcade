@@ -21,8 +21,8 @@ function BaseRoomConfig(room)
         BonusEnemyInverse: true,
         BonusEnemyStraightAngle: true,
         BonusAllBorderless: true,
-        BonusAllColor: true,
-        BonusGameClear: true
+        BonusAllColor: false,
+        BonusGameClear: false
     };
 }
 
@@ -156,7 +156,7 @@ BaseRoomConfig.prototype.getMaxScore = function()
  */
 BaseRoomConfig.prototype.getDefaultMaxScore = function()
 {
-    return Math.max(1, (this.room.players.count() - 1) * 10);
+    return Math.max(1, (this.room.players.count() - 1) * 5);
 };
 
 /**
