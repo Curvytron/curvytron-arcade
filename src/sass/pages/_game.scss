@@ -256,26 +256,6 @@
         }
     }
 
-    #game-death {
-        position: fixed;
-        top: 0;
-        right: 0;
-
-
-        .deaths {
-            display: block;
-            width: 100%;
-            margin: 0;
-            text-align: center;
-            overflow: hidden;
-
-            img {
-                float: left;
-                width: 50%;
-            }
-        }
-    }
-
     #col-right {
         left: 20%;
         right: 0;
@@ -517,6 +497,30 @@
                                 background: transparentize(#FFF, 0.9);
                             }
                         }
+                    }
+                }
+            }
+
+            .deaths {
+                display: block;
+                width: 100%;
+                margin: 10px 0;
+                width: 750px;
+                height: 280px;
+                text-align: center;
+                overflow: hidden;
+
+                .slider {
+                    @include transition(all 0.6s ease);
+
+                    margin-left: 175px;
+
+                    img {
+                        width: 340px;
+                        height: 255px;
+                        max-height: 100%;
+                        margin: 0 5px;
+                        padding: 0;
                     }
                 }
             }

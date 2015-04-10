@@ -24,12 +24,6 @@
                 <div id="death-cam" class="death-cam"></div>
             </footer>
         </aside>
-        <!--aside id="game-death">
-            <div id="death-cam" class="death-cam"></div>
-            <div class="deaths">
-                <img src="{{ picture }}" ng-repeat="picture in pictures">
-            </div>
-        </aside-->
         <div id="col-right">
             <div class="game-kill-log" ng-controller="KillLogController">
                 <div class="kill-log-wrapper" ng-include="'js/views/game/kill_log.html'" onload="killLogLoaded()"></div>
@@ -80,6 +74,11 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="deaths">
+                        <div class="slider" style="width: {{ pictures.length * 350 }}px">
+                            <img src="{{ picture }}" ng-repeat="picture in pictures">
+                        </div>
+                    </div>
                     <p class="go-back" ng-if="goBack">
                         <span ng-if="goBack !== true">{{ goBack }}...</span>
                         <span ng-if="goBack === true">Press any button to play again!</span>
