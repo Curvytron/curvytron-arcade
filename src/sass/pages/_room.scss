@@ -24,122 +24,183 @@
         }
     }
 
-    .room-details {
-        padding-top: 25px;
-    }
-
-    .room-chat {
-        float: left;
-        width: 32%;
-        padding-right: 30px;
-
-        .chat-wrapper {
-            margin-top: 50px;
-
-            .feed {
-                position: relative;
-                height: 400px;
-                max-height: 400px;
-            }
-
-            .action-line {
-                margin-top: 10px;
-                height: 60px;
-                position: relative;
-                overflow: hidden;
-
-                .form-control {
-                    height: 60px;
-                    font-size: 16px;
-                    background: #FFF;
-                    border: 0;
-                    padding-right: 85px;
-
-                    &:focus {
-                        border-color: $text-color;
-                    }
-                }
-
-                .btn {
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    height: 60px;
-                    width: 80px;
-                    text-align: center;
-                    border: 0;
-                    border-left: 10px solid $background-color;
-                    color: #FFF;
-                    margin: 0 -10px 0 20px;
-                    padding: 0 25px 0 15px;
-                    @include horizontal-gradient($header-background-from, $header-background-to);
-                    @include skew(-10deg, 0);
-                    @include transition(all 0.1s linear);
-                    -webkit-backface-visibility: hidden;
-                    -webkit-user-select: none;
-                    -moz-user-select: none;
-                    -ms-user-select: none;
-                    user-select: none;
-
-                    span {
-                        display: block;
-                        @include skew(10deg, 0);
-                        -webkit-backface-visibility: hidden;
-                    }
-
-                    &:hover {
-                        padding-right: 20px;
-                    }
-                }
-            }
-        }
+    .tutorial {
+        text-align: center;
+        font-size: 24px;
+        margin-top: -60px;
+        margin-bottom: 40px;
     }
 
     .room-players {
         width: 100%;
+        height: 400px;
+        position: relative;
+
+        .circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            background: $background-color;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            border: 5px solid #DDD;
+            // border-top-color: red;
+            // border-right-color: pink;
+            // border-left-color: green;
+            // border-bottom-color: navy;
+
+            &::before, &::after {
+                content: '';
+                background: $background-color;
+                position: absolute;
+                top: 50%;
+                margin-top: -10px;
+                margin-left: -10px;
+                left: 0;
+                width: 110px;
+                height: 20px;
+            }
+
+            &::before {
+                transform: rotate(45deg);
+            }
+
+            &::after {
+                transform: rotate(-45deg);
+            }
+        }
 
         .slot {
-            width: 48%;
-            margin: 2%;
-            padding: 0;
+            width: 50%;
+            height: 50%;
+            padding: 10px;
             float: left;
-
-            &:nth-child(even) {
-                margin-right: 0;
-            }
-
-            &:nth-child(odd) {
-                margin-left: 0;
-            }
+            position: relative;
 
             .empty, .player {
-                padding: 5px;
-                padding: 5px;
-                height: 100px;
+                height: 100%;
+                display: block;
+                position: relative;
             }
 
             .player {
-                color: #ffffff;
+                color: #FFF;
+                padding: 30px;
+                overflow: hidden;
+
+                p {
+                    font-size: 22px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    text-align: center;
+                    margin: 0;
+                    width: 100%;
+                    position: absolute;
+                    left: 0;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
             }
 
             .empty {
-                background-color: #ffffff;
+                background-color: #FFF;
+
+                p {
+                    font-size: 22px;
+                    font-weight: bold;
+                    color: #999;
+                    text-transform: uppercase;
+                    text-align: center;
+                    margin: 0;
+                    width: 100%;
+                    position: absolute;
+                    left: 0;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+            }
+
+            .gamepad {
+                position: absolute;
+                font-size: 15px;
+                font-weight: bold;
+            }
+
+            &:nth-child(1) {
+                .gamepad {
+                    bottom: 30px;
+                    right: 30px;
+                }
+            }
+
+            &:nth-child(2) {
+                .gamepad {
+                    bottom: 30px;
+                    left: 30px;
+                }
+            }
+
+            &:nth-child(3) {
+                .gamepad {
+                    top: 30px;
+                    right: 30px;
+                }
+            }
+
+            &:nth-child(4) {
+                .gamepad {
+                    top: 30px;
+                    left: 30px;
+                }
+            }
+
+            &:nth-child(1),
+            &:nth-child(3) {
+                .player-name {
+                    padding-left: 120px;
+                }
+            }
+
+            &:nth-child(2),
+            &:nth-child(4) {
+                .player-name {
+                    padding-right: 120px;
+                }
+
+                .player-ready {
+                    left: auto;
+                    right: 0;
+                    transform: skew(-7deg);
+                    border-right: 0;
+                    border-left: 10px solid $background-color;
+                    margin-left: 0;
+                    margin-right: -15px;
+
+                    > span {
+                        transform: skew(7deg);
+                        margin-left: 0;
+                        margin-right: 10px;
+                    }
+                }
             }
         }
     }
 
     .player-ready {
         display: block;
-        position: relative;
-        margin: 0 -10px 0 20px;
-        padding: 0 25px 0 20px;
-        line-height: 60px;
-        height: 60px;
-        border-left: 10px solid $background-color;
+        position: absolute;
+        width: 150px;
+        left: 0;
+        top: -2px;
+        bottom: -2px;
+        margin-left: -15px;
+        border-right: 10px solid $background-color;
         background: darken($background-color, 7%);
         color: #FFF;
         text-align: center;
+        transform: skew(7deg);
         @include transition(all 0.2s ease);
         -webkit-backface-visibility: hidden;
         -webkit-user-select: none;
@@ -176,9 +237,13 @@
             position: relative;
             z-index: 100;
             text-transform: uppercase;
+            line-height: 180px;
+            margin-left: 10px;
+            vertical-align: middle;
             font-size: 20px;
             color: $text-color;
             @include transition(all 0.2s linear);
+            transform: skew(-7deg);
             -webkit-backface-visibility: hidden;
         }
     }
@@ -209,9 +274,8 @@
     }
 
     .player-name {
-
         height: 40px;
-        padding: 5px 10px;
+        padding: 0;
         margin: 0;
         border: 2px solid transparent;
         font-weight: bold;
