@@ -8,8 +8,8 @@ function PhotoBooth()
     this.video     = document.createElement('video');
     this.canvas    = new Canvas(this.width, this.height);
     this.streaming = false;
-    this.pictures  = [];
     this.parent    = null;
+    this.pictures  = [];
 
     this.onVideo          = this.onVideo.bind(this);
     this.onError          = this.onError.bind(this);
@@ -27,14 +27,14 @@ function PhotoBooth()
  *
  * @type {Number}
  */
-PhotoBooth.prototype.width = 800;
+PhotoBooth.prototype.width = 640;
 
 /**
  * Camera height
  *
  * @type {Number}
  */
-PhotoBooth.prototype.height = 450;
+PhotoBooth.prototype.height = 480;
 
 /**
  * Take a picture
@@ -134,12 +134,12 @@ PhotoBooth.prototype.onLoadedMetaData = function(event)
  */
 PhotoBooth.prototype.onCanPlay = function(event)
 {
-    //this.height = this.video.videoHeight / (this.video.videoWidth / this.width);
+    this.height = this.video.videoHeight;
+    this.width  = this.video.videoWidth;
 
-    console.log(this.width, this.height);
     this.canvas.setDimension(this.width, this.height);
-    this.video.setAttribute('width', this.width);
-    this.video.setAttribute('height', this.height);
+    this.video.width  = this.width;
+    this.video.height = this.height;
 };
 
 /**
