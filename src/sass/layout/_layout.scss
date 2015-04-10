@@ -23,46 +23,58 @@ body {
   margin: 0 auto;
 }
 
-#browsehappy {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: #FFF;
-  z-index: 9999;
-
-  #browsehappy-inner {
-    margin: 40px auto;
-    width: 500px;
-    background: #ccc;
-    color: #666;
-    border: 2px solid #AAA;
-    text-align: center;
-    padding: 20px;
-  }
-}
-
 header {
   color: $header-color;
   text-align: center;
   padding: 40px 20px;
-  margin: 0 0 40px 0;
+  margin: 0;
   position: relative;
   border-bottom: 10px solid #FFF;
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 25%;
   @include gradient($header-background-from, $header-background-to);
 
-  .links {
-    position: absolute;
-    a {
-      display: block;
+  .website,
+  .twitter {
+    font-size: 26px;
+
+    &, &:visited {
+      color: #FFF;
     }
+
+    &::after {
+      content: '';
+      width: 40px;
+      height: 2px;
+      background: #FFF;
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+  .website {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 50px;
+  }
+  .twitter {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 50px;
   }
 
   .logo {
     z-index: 10;
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
     &, &:visited {
       line-height: 50px;
@@ -90,41 +102,30 @@ header {
       display: block;
     }
   }
-
-  .game-copy {
-    display: none;
-  }
-
-  .profile-link {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: $base-font-size;
-    line-height: $base-font-size;
-    font-family: $base-font-family;
-    vertical-align: top;
-    padding: 8px 16px;
-    background-color: $game-background;
-    border: none;
-    border-radius: 40px;
-
-    &,&:visited {
-      color: #ffffff;
-    }
-
-    .circle {
-      width: $base-font-size;
-      height: $base-font-size;
-      border-radius: $base-font-size;
-      display: inline-block;
-      margin-left: -8px;
-      margin-right: 8px;
-      background-color: #ffffff;
-      vertical-align: top;
-    }
-  }
 }
 
+#error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  @include transform(translate(-50%, -50%));
+}
+
+
+#main {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 75%;
+
+  .room {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    @include transform(translate(-50%, -50%));
+  }
+}
 
 footer {
   background: $footer-background;
@@ -148,6 +149,16 @@ footer {
       }
     }
   }
+}
+
+.elao {
+  position: fixed;
+  bottom: 15px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #BBB;
+  font-size: 16px;
 }
 
 body.game-mode {

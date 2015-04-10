@@ -19,6 +19,7 @@ function RoomController()
         onPlayerAdd: function (data) { controller.onPlayerAdd(this, data[0], data[1]); },
         onPlayerRemove: function (data) { controller.onPlayerRemove(this, data[0], data[1]); },
         onReady: function (data) { controller.onReady(this, data[0], data[1]); },
+        onProfile: function (data) { controller.onProfile(this, data[0], data[1]); },
         onLeave: function () { controller.onLeave(this); }
     };
 
@@ -70,6 +71,7 @@ RoomController.prototype.attachEvents = function(client)
     client.on('player:add', this.callbacks.onPlayerAdd);
     client.on('player:remove', this.callbacks.onPlayerRemove);
     client.on('room:ready', this.callbacks.onReady);
+    client.on('room:profile', this.callbacks.onProfile);
 };
 
 /**
@@ -84,6 +86,7 @@ RoomController.prototype.detachEvents = function(client)
     client.removeListener('player:add', this.callbacks.onPlayerAdd);
     client.removeListener('player:remove', this.callbacks.onPlayerRemove);
     client.removeListener('room:ready', this.callbacks.onReady);
+    client.removeListener('room:profile', this.callbacks.onProfile);
 };
 
 /**
@@ -215,6 +218,38 @@ RoomController.prototype.onReady = function(client, data, callback)
     } else {
         callback({success: false, error: 'Player with id "' + data.player + '" not found'});
     }
+};
+
+/**
+ * On player profile change
+ *
+ * @param {SocketClient} client
+ * @param {Object} data
+ * @param {Function} callback
+ */
+RoomController.prototype.onProfile = function(client, data, callback)
+{
+    var player = client.players.getById(data.player),
+        name   = data.name.substr(0, Player.prototype.maxLength).trim(),
+        color  = data.color;
+
+    if (!player) {
+        return callback({success: false, error: 'Unknown player: "' + name + '"'});
+    }
+
+    if (!name.length) {
+        return callback({success: false, error: 'Invalid name.', name: player.name, color: player.color});
+    }
+
+    if (!this.room.isNameAvailable(name)) {
+        return callback({success: false, error: 'This username is already used.', name: player.name, color: player.color});
+    }
+
+    player.setName(name);
+    player.setColor(color);
+
+    callback({success: true, name: player.name, color: player.color});
+    this.socketGroup.addEvent('player:profile', { player: player.id, name: player.name, color: player.color });
 };
 
 /**
