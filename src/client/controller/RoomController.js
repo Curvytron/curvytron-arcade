@@ -9,11 +9,12 @@
  */
 function RoomController($scope, $routeParams, $location, client, repository)
 {
-    this.$scope     = $scope;
-    this.$location  = $location;
-    this.client     = client;
-    this.repository = repository;
-    this.players    = {0: null, 1: null, 2: null, 3: null};
+    this.$scope         = $scope;
+    this.$location      = $location;
+    this.client         = client;
+    this.repository     = repository;
+    this.players        = {0: null, 1: null, 2: null, 3: null};
+    this.launchInterval = null;
 
     // Binding:
     this.onGamepadConnected    = this.onGamepadConnected.bind(this);
@@ -22,15 +23,19 @@ function RoomController($scope, $routeParams, $location, client, repository)
     this.onGamepadButton       = this.onGamepadButton.bind(this);
     this.onJoin                = this.onJoin.bind(this);
     this.applyScope            = this.applyScope.bind(this);
-    this.launch                = this.launch.bind(this);
+    this.onLaunchStart         = this.onLaunchStart.bind(this);
+    this.onLaunchTimer         = this.onLaunchTimer.bind(this);
+    this.onLaunchCancel        = this.onLaunchCancel.bind(this);
+    this.init                  = this.init.bind(this);
     this.start                 = this.start.bind(this);
 
     // Hydrating scope:
     this.$scope.curvytron.bodyClass = null;
     this.$scope.players             = this.players;
+    this.$scope.launch              = false;
 
     this.repository.start();
-    this.launch();
+    this.init();
 }
 
 /**
@@ -59,12 +64,12 @@ RoomController.prototype.profiles = [
 ];
 
 /**
- * Launche the room
+ * Init the room
  */
-RoomController.prototype.launch = function()
+RoomController.prototype.init = function()
 {
     if (!this.client.connected) {
-        return this.client.on('connected', this.launch);
+        return this.client.on('connected', this.init);
     }
 
     this.$scope.room = this.repository.room;
@@ -94,6 +99,8 @@ RoomController.prototype.attachEvents = function(name)
     this.repository.on('player:leave', this.applyScope);
     this.repository.on('player:ready', this.applyScope);
     this.repository.on('player:profile', this.applyScope);
+    this.repository.on('room:launch:start', this.onLaunchStart);
+    this.repository.on('room:launch:cancel', this.onLaunchCancel);
     this.repository.on('room:game:start', this.start);
 };
 
@@ -112,6 +119,8 @@ RoomController.prototype.detachEvents = function(name)
     this.repository.off('player:leave', this.applyScope);
     this.repository.off('player:ready', this.applyScope);
     this.repository.off('player:profile', this.applyScope);
+    this.repository.off('room:launch:start', this.onLaunchStart);
+    this.repository.off('room:launch:cancel', this.onLaunchCancel);
     this.repository.off('room:game:start', this.start);
 };
 
@@ -312,12 +321,66 @@ RoomController.prototype.getRandomProfile = function()
 };
 
 /**
+ * On launch start
+ *
+ * @param {Event} e
+ */
+RoomController.prototype.onLaunchStart = function(e)
+{
+    this.clearLaunchInterval();
+    this.launchInterval = setInterval(this.onLaunchTimer, 1000);
+    this.$scope.launch = this.repository.room.launchTime / 1000;
+    console.log('onLaunchStart', this.$scope.launch);
+    this.applyScope();
+};
+
+/**
+ * On launch cancel
+ *
+ * @param {Event} e
+ */
+RoomController.prototype.onLaunchCancel = function(e)
+{
+    console.log('onLaunchCancel');
+    this.clearLaunchInterval();
+    this.$scope.launch = false;
+    this.applyScope();
+};
+
+/**
+ * On launch timer
+ *
+ * @param {Event} e
+ */
+RoomController.prototype.onLaunchTimer = function(e)
+{
+    if (this.$scope.launch) {
+        this.$scope.launch--;
+        this.applyScope();
+    }
+    console.log('onLaunchTimer', this.$scope.launch);
+};
+
+/**
+ * Clear launch interval
+ */
+RoomController.prototype.clearLaunchInterval = function()
+{
+    console.log('clearLaunchInterval', this.launchInterval);
+    if (this.launchInterval) {
+        this.launchInterval = clearInterval(this.launchInterval);
+    }
+};
+
+/**
  * Start Game
  *
  * @param {Event} e
  */
 RoomController.prototype.start = function(e)
 {
+    this.clearLaunchInterval();
+    this.$scope.launch = false;
     this.detachEvents();
     this.$location.path('/play');
     this.applyScope();

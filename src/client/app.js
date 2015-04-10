@@ -26,8 +26,7 @@ curvytronApp.controller(
     ['$scope', 'KillLog', KillLogController]
 );
 
-curvytronApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
-    $locationProvider.html5Mode(true);
+curvytronApp.config(['$routeProvider', '$locationProvider', function($routeProvider) {
     $routeProvider
         .when('/', {
             templateUrl: 'js/views/rooms/detail.html',
