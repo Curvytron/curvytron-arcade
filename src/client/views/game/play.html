@@ -13,20 +13,23 @@
                 </li>
             </ul>
             <footer>
-                <span id="fps" class="pull-right">0</span>
-                <span id="ping" class="pull-right" style="color: {{ latency <= 100 ? 'green' : (latency <= 300 ? 'orange' : 'red') }}">{{ latency }}ms</span>
-                <span id="spectators" ng-if="spectators" class="pull-right">
-                    {{ spectators }} <span class="icon-viewer"></span>
-                </span>
-                <a href="http://www.elao.com" class="game-copy pull-left" target="_blank">Handmade by Elao with <i class="icon-love"></i></a>
+                <p class="inner">
+                    <span id="fps" class="pull-right">0</span>
+                    <span id="ping" class="pull-right" style="color: {{ latency <= 100 ? 'green' : (latency <= 300 ? 'orange' : 'red') }}">{{ latency }}ms</span>
+                    <span id="spectators" ng-if="spectators" class="pull-right">
+                        {{ spectators }} <span class="icon-viewer"></span>
+                    </span>
+                    <a href="http://www.elao.com" class="game-copy pull-left" target="_blank">Handmade by Elao with <i class="icon-love"></i></a>
+                </p>
+                <div id="death-cam" class="death-cam"></div>
             </footer>
         </aside>
-        <aside id="game-death">
+        <!--aside id="game-death">
             <div id="death-cam" class="death-cam"></div>
             <div class="deaths">
                 <img src="{{ picture }}" ng-repeat="picture in pictures">
             </div>
-        </aside>
+        </aside-->
         <div id="col-right">
             <div class="game-kill-log" ng-controller="KillLogController">
                 <div class="kill-log-wrapper" ng-include="'js/views/game/kill_log.html'" onload="killLogLoaded()"></div>
