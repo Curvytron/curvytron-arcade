@@ -153,8 +153,8 @@ Canvas.prototype.drawImageScaled = function(image, position, width, height, angl
 Canvas.prototype.drawImage = function(image, position, width, height, angle, opacity)
 {
     position = typeof(position) !== 'undefined' && position ? position : [0, 0];
-    angle = typeof(angle) !== 'undefined' && angle ? angle : false;
-    opacity = typeof(opacity) !== 'undefined' && opacity ? opacity : 1;
+    angle    = typeof(angle) !== 'undefined' && angle ? angle : false;
+    opacity  = typeof(opacity) !== 'undefined' && opacity ? opacity : 1;
 
     if (angle) {
         var centerX = position[0] + width/2,
