@@ -22,8 +22,8 @@
                     </div>
                 </div>
                 <div class="circle">
-                    <span class="count {{ launch }}">
-                        {{ launch ? launch : '...' }}
+                    <span ng-if="launch" class="count {{ launch }}">
+                        {{ launch }}
                     </span>
                 </div>
             </div>
