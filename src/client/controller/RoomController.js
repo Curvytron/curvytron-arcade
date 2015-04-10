@@ -18,6 +18,7 @@ function RoomController($scope, $routeParams, $location, client, repository)
     // Binding:
     this.onGamepadConnected    = this.onGamepadConnected.bind(this);
     this.onGamepadDisconnected = this.onGamepadDisconnected.bind(this);
+    this.onGamepadAxis         = this.onGamepadAxis.bind(this);
     this.onGamepadButton       = this.onGamepadButton.bind(this);
     this.onJoin                = this.onJoin.bind(this);
     this.applyScope            = this.applyScope.bind(this);
@@ -88,9 +89,11 @@ RoomController.prototype.attachEvents = function(name)
     gamepadListener.on('gamepad:connected', this.onGamepadConnected);
     gamepadListener.on('gamepad:disconnected', this.onGamepadDisconnected);
     gamepadListener.on('gamepad:button', this.onGamepadButton);
+    gamepadListener.on('gamepad:axis', this.onGamepadAxis);
     this.repository.on('player:join', this.onJoin);
     this.repository.on('player:leave', this.applyScope);
     this.repository.on('player:ready', this.applyScope);
+    this.repository.on('player:profile', this.applyScope);
     this.repository.on('room:game:start', this.start);
 };
 
@@ -104,9 +107,11 @@ RoomController.prototype.detachEvents = function(name)
     gamepadListener.off('gamepad:connected', this.onGamepadConnected);
     gamepadListener.off('gamepad:disconnected', this.onGamepadDisconnected);
     gamepadListener.off('gamepad:button', this.onGamepadButton);
+    gamepadListener.off('gamepad:axis', this.onGamepadAxis);
     this.repository.off('player:join', this.onJoin);
     this.repository.off('player:leave', this.applyScope);
     this.repository.off('player:ready', this.applyScope);
+    this.repository.off('player:profile', this.applyScope);
     this.repository.off('room:game:start', this.start);
 };
 
@@ -147,7 +152,19 @@ RoomController.prototype.onGamepadButton = function(e)
 };
 
 /**
- * Toogle player
+ * On gamepad axis change
+ *
+ * @param {Event} e
+ */
+RoomController.prototype.onGamepadAxis = function(e)
+{
+    if (e.detail.value) {
+        this.changeProfile(e.detail.gamepad.index);
+    }
+};
+
+/**
+ * Toggle player
  *
  * @param {Number} index
  */
@@ -159,6 +176,21 @@ RoomController.prototype.togglePlayer = function(index)
         var gamepads = gamepadListener.getGamepads();
 
         this.addPlayer(index, gamepads[index]);
+    }
+};
+
+/**
+ * Change player profile
+ *
+ * @param {Number} index
+ */
+RoomController.prototype.changeProfile = function(index)
+{
+    var player  = this.players[index],
+        profile = this.getRandomProfile();
+
+    if (player && profile) {
+        this.repository.setProfile(this.players[index], profile.name, profile.color);
     }
 };
 

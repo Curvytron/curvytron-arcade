@@ -10,12 +10,13 @@ function RoomRepository(client)
     this.client = client;
     this.room   = new Room('Arcade');
 
-    this.start            = this.start.bind(this);
-    this.onJoinRoom       = this.onJoinRoom.bind(this);
-    this.onLeaveRoom      = this.onLeaveRoom.bind(this);
-    this.onGameStart      = this.onGameStart.bind(this);
-    this.onGameEnd        = this.onGameEnd.bind(this);
-    this.onPlayerReady    = this.onPlayerReady.bind(this);
+    this.start           = this.start.bind(this);
+    this.onJoinRoom      = this.onJoinRoom.bind(this);
+    this.onLeaveRoom     = this.onLeaveRoom.bind(this);
+    this.onGameStart     = this.onGameStart.bind(this);
+    this.onGameEnd       = this.onGameEnd.bind(this);
+    this.onPlayerReady   = this.onPlayerReady.bind(this);
+    this.onPlayerProfile = this.onPlayerProfile.bind(this);
 }
 
 RoomRepository.prototype = Object.create(EventEmitter.prototype);
@@ -31,6 +32,7 @@ RoomRepository.prototype.attachEvents = function()
     this.client.on('room:game:start', this.onGameStart);
     this.client.on('room:game:end', this.onGameEnd);
     this.client.on('player:ready', this.onPlayerReady);
+    this.client.on('player:profile', this.onPlayerProfile);
 };
 
 /**
@@ -43,6 +45,7 @@ RoomRepository.prototype.detachEvents = function()
     this.client.off('room:game:start', this.onGameStart);
     this.client.off('room:game:end', this.onGameEnd);
     this.client.off('player:ready', this.onPlayerReady);
+    this.client.off('player:profile', this.onPlayerProfile);
 };
 
 /**
@@ -95,6 +98,34 @@ RoomRepository.prototype.removePlayer = function(player, callback)
 RoomRepository.prototype.setReady = function(player, callback)
 {
     this.client.addEvent('room:ready', {player: player}, callback);
+};
+
+/**
+ * Set name and color
+ *
+ * @param {Player} player
+ * @param {String} name
+ * @param {String} color
+ * @param {Function} callback
+ */
+RoomRepository.prototype.setProfile = function(player, name, color, callback)
+{
+    this.client.addEvent('room:profile', {
+        player: player.id,
+        name: name.substr(0, Player.prototype.nameMaxLength).trim(),
+        color: color.substr(0, Player.prototype.colorMaxLength)
+    }, function (result) {
+        if (typeof(result.name) !== 'undefined') {
+            player.setName(result.name);
+        }
+        if (typeof(result.color) !== 'undefined') {
+            player.setColor(result.color);
+        }
+
+        if (typeof(callback) === 'function') {
+            callback(result);
+        }
+    });
 };
 
 // EVENTS:
@@ -152,6 +183,23 @@ RoomRepository.prototype.onPlayerReady = function(e)
     if (player) {
         player.toggleReady(data.ready);
         this.emit('player:ready', {player: player});
+    }
+};
+
+/**
+ * On player profile
+ *
+ * @param {Event} e
+ */
+RoomRepository.prototype.onPlayerProfile = function(e)
+{
+    var data = e.detail,
+        player = this.room.players.getById(data.player);
+
+    if (player) {
+        player.setName(data.name);
+        player.setColor(data.color);
+        this.emit('player:profile', {player: player});
     }
 };
 
