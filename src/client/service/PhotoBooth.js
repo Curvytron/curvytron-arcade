@@ -27,14 +27,14 @@ function PhotoBooth()
  *
  * @type {Number}
  */
-PhotoBooth.prototype.width = 400;
+PhotoBooth.prototype.width = 800;
 
 /**
  * Camera height
  *
  * @type {Number}
  */
-PhotoBooth.prototype.height = 300;
+PhotoBooth.prototype.height = 450;
 
 /**
  * Take a picture
@@ -134,7 +134,7 @@ PhotoBooth.prototype.onLoadedMetaData = function(event)
  */
 PhotoBooth.prototype.onCanPlay = function(event)
 {
-    this.height = this.video.videoHeight / (this.video.videoWidth / this.width);
+    //this.height = this.video.videoHeight / (this.video.videoWidth / this.width);
 
     console.log(this.width, this.height);
     this.canvas.setDimension(this.width, this.height);
