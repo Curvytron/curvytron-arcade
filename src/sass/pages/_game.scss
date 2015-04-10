@@ -15,6 +15,7 @@
     }
 
     #game-infos {
+        width: 20%;
         overflow: auto;
         background: $aside-background;
         color: #EEE;
@@ -218,8 +219,13 @@
             bottom: 0;
             width: 100%;
             background: $aside-background;
-            padding: 10px 20px;
+            padding: 0;
             margin: 0;
+
+            .inner {
+                padding: 10px 20px;
+                height: 50px;
+            }
 
             .game-copy {
                 color: #FFF;
@@ -239,39 +245,40 @@
         }
     }
 
+
+    .death-cam {
+        max-width: 100%;
+        width: 100%;
+
+        img, video {
+            width: 100% !important;
+            display: block;
+        }
+    }
+
     #game-death {
         position: fixed;
         top: 0;
         right: 0;
 
-        .death-cam {
-            position: absolute;
-            bottom: 0;
-            max-width: 100%;
-            width: 100%;
-
-            img, video {
-                width: 100% !important;
-            }
-        }
 
         .deaths {
             display: block;
             width: 100%;
-            margin: 10px 0;
+            margin: 0;
             text-align: center;
             overflow: hidden;
 
             img {
                 float: left;
-                margin: 4px;
-                max-width: 100%;
+                width: 50%;
             }
         }
     }
 
     #col-right {
-        width: auto;
+        left: 20%;
+        right: 0;
         margin: 0;
         text-align: center;
 

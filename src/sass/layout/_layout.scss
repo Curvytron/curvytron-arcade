@@ -45,6 +45,10 @@ header {
       color: #FFF;
     }
 
+    &:hover {
+      text-decoration: none;
+    }
+
     &::after {
       content: '';
       width: 40px;
