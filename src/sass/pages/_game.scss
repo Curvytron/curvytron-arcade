@@ -252,6 +252,7 @@
 
         img, video {
             width: 100% !important;
+            height: auto !important;
             display: block;
         }
     }
@@ -503,19 +504,40 @@
 
             .deaths {
                 display: block;
-                width: 100%;
-                margin: 10px 0;
-                width: 750px;
-                height: 280px;
+                margin: 30px 0;
+                width: 1200px;
+                height: 480px;
                 text-align: center;
                 overflow: hidden;
+                position: relative;
+
+                &::before, &::after {
+                    content: '';
+                    position: absolute;
+                    width: 300px;
+                    height: 485px;
+                    top: 0;
+                    bottom: 0;
+                    z-index: 200;
+                }
+
+                &::before {
+                    background: linear-gradient(to left, transparent 0%, #171717 100%);
+                    left: 0;
+                }
+
+                &::after {
+                    background: linear-gradient(to right, transparent 0%, #171717 100%);
+                    right: 0;
+                }
 
                 .slider {
+                    position: relative;
                     @include transition(all 0.6s ease);
 
                     img {
-                        width: 340px;
-                        height: 255px;
+                        width: 640;
+                        height: 480px;
                         max-height: 100%;
                         margin: 0 5px;
                         padding: 0;
