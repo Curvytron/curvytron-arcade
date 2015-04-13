@@ -44,14 +44,6 @@ PhotoBooth.prototype.height = 480;
 PhotoBooth.prototype.takePicture = function()
 {
     if (this.streaming) {
-        console.log(
-            'Video: %sx%s | Canvas: %sx%s',
-            this.video.videoWidth,
-            this.video.videoheight,
-            this.canvas.element.width,
-            this.canvas.element.height
-        );
-
         this.canvas.drawImage(this.video);
 
         var picture = this.canvas.toString();

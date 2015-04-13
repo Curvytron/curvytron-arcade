@@ -75,7 +75,7 @@
                         </tbody>
                     </table>
                     <div class="deaths">
-                        <div class="slider" style="width: {{ pictures.length * 350 }}px">
+                        <div class="slider" style="width: {{ pictures.length * 350 }}px; margin-left: {{ - (slide - 0.5) * 350 }}px;">
                             <img src="{{ picture }}" ng-repeat="picture in pictures">
                         </div>
                     </div>

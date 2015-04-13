@@ -330,7 +330,6 @@ RoomController.prototype.onLaunchStart = function(e)
     this.clearLaunchInterval();
     this.launchInterval = setInterval(this.onLaunchTimer, 1000);
     this.$scope.launch = this.repository.room.launchTime / 1000;
-    console.log('onLaunchStart', this.$scope.launch);
     this.applyScope();
 };
 
@@ -341,7 +340,6 @@ RoomController.prototype.onLaunchStart = function(e)
  */
 RoomController.prototype.onLaunchCancel = function(e)
 {
-    console.log('onLaunchCancel');
     this.clearLaunchInterval();
     this.$scope.launch = false;
     this.applyScope();
@@ -358,7 +356,6 @@ RoomController.prototype.onLaunchTimer = function(e)
         this.$scope.launch--;
         this.applyScope();
     }
-    console.log('onLaunchTimer', this.$scope.launch);
 };
 
 /**
@@ -366,7 +363,6 @@ RoomController.prototype.onLaunchTimer = function(e)
  */
 RoomController.prototype.clearLaunchInterval = function()
 {
-    console.log('clearLaunchInterval', this.launchInterval);
     if (this.launchInterval) {
         this.launchInterval = clearInterval(this.launchInterval);
     }

@@ -52,6 +52,7 @@ function GameController($scope, $routeParams, $location, client, repository, sou
     this.countGoBack     = this.countGoBack.bind(this);
     this.listenGoBack    = this.listenGoBack.bind(this);
     this.onGamepadButton = this.onGamepadButton.bind(this);
+    this.onGamepadAxis   = this.onGamepadAxis.bind(this);
     this.takePicture     = this.takePicture.bind(this);
 
     // Hydrate scope:
@@ -66,6 +67,7 @@ function GameController($scope, $routeParams, $location, client, repository, sou
     this.$scope.latency     = 0;
     this.$scope.goBack      = false;
     this.$scope.pictures    = this.photoBooth.pictures;
+    this.$scope.slide       = 0;
 
     this.photoBooth.attach(document.getElementById('death-cam'));
 
@@ -556,6 +558,8 @@ GameController.prototype.setGoBack = function()
     this.$scope.goBack  = this.goBackTime/1000;
     this.goBackInterval = setInterval(this.countGoBack, 1000);
     this.goBackTimeout  = setTimeout(this.listenGoBack, this.goBackTime);
+
+    gamepadListener.on('gamepad:axis', this.onGamepadAxis);
 };
 
 /**
@@ -582,6 +586,18 @@ GameController.prototype.listenGoBack = function()
 };
 
 /**
+ * On gamepad axis change
+ *
+ * @param {Event} e
+ */
+GameController.prototype.onGamepadAxis = function(e)
+{
+    if (e.detail.value) {
+        this.slidePictures(e.detail.value > 0);
+    }
+};
+
+/**
  * On gamepad button pressed
  *
  * @param {Event} e
@@ -589,6 +605,7 @@ GameController.prototype.listenGoBack = function()
 GameController.prototype.onGamepadButton = function(e)
 {
     if (this.$scope.goBack) {
+        gamepadListener.off('gamepad:axis', this.onGamepadAxis);
         gamepadListener.off('gamepad:button', this.onGamepadButton);
         this.backToRoom();
     }
@@ -608,7 +625,28 @@ GameController.prototype.backToRoom = function()
  */
 GameController.prototype.takePicture = function()
 {
+    var photo = this.photoBooth;
+
     this.photoBooth.takePicture();
+    setTimeout(function () { photo.takePicture(); }, 100);
+    setTimeout(function () { photo.takePicture(); }, 200);
+    setTimeout(function () { photo.takePicture(); }, 300);
+    setTimeout(function () { photo.takePicture(); }, 400);
+};
+
+/**
+ * Slide pictures
+ *
+ * @param {Boolean} forward
+ */
+GameController.prototype.slidePictures = function(forward)
+{
+    var max   = this.photoBooth.pictures.length - 1,
+        slide = Math.max(0, Math.min(this.$scope.slide + (forward ? 1 : -1), max));
+
+    this.$scope.slide = slide;
+
+    this.applyScope();
 };
 
 /**
