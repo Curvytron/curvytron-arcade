@@ -13,12 +13,15 @@
                 </li>
             </ul>
             <footer>
-                <span id="fps" class="pull-right">0</span>
-                <span id="ping" class="pull-right" style="color: {{ latency <= 100 ? 'green' : (latency <= 300 ? 'orange' : 'red') }}">{{ latency }}ms</span>
-                <span id="spectators" ng-if="spectators" class="pull-right">
-                    {{ spectators }} <span class="icon-viewer"></span>
-                </span>
-                <a href="http://www.elao.com" class="game-copy pull-left" target="_blank">Handmade by Elao with <i class="icon-love"></i></a>
+                <p class="inner">
+                    <span id="fps" class="pull-right">0</span>
+                    <span id="ping" class="pull-right" style="color: {{ latency <= 100 ? 'green' : (latency <= 300 ? 'orange' : 'red') }}">{{ latency }}ms</span>
+                    <span id="spectators" ng-if="spectators" class="pull-right">
+                        {{ spectators }} <span class="icon-viewer"></span>
+                    </span>
+                    <a href="http://www.elao.com" class="game-copy pull-left" target="_blank">Handmade by Elao with <i class="icon-love"></i></a>
+                </p>
+                <div id="death-cam" class="death-cam"></div>
             </footer>
         </aside>
         <div id="col-right">
@@ -71,6 +74,11 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="deaths">
+                        <div class="slider" style="width: {{ pictures.length * 350 }}px; margin-left: {{ - (slide - 0.5) * 350 }}px;">
+                            <img src="{{ picture }}" ng-repeat="picture in pictures">
+                        </div>
+                    </div>
                     <p class="go-back" ng-if="goBack">
                         <span ng-if="goBack !== true">{{ goBack }}...</span>
                         <span ng-if="goBack === true">Press any button to play again!</span>

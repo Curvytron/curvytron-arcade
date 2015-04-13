@@ -13,8 +13,7 @@ function RoomRepository(client)
     this.start           = this.start.bind(this);
     this.onJoinRoom      = this.onJoinRoom.bind(this);
     this.onLeaveRoom     = this.onLeaveRoom.bind(this);
-    this.onGameStart     = this.onGameStart.bind(this);
-    this.onGameEnd       = this.onGameEnd.bind(this);
+    this.forwardEvent    = this.forwardEvent.bind(this);
     this.onPlayerReady   = this.onPlayerReady.bind(this);
     this.onPlayerProfile = this.onPlayerProfile.bind(this);
 }
@@ -29,8 +28,10 @@ RoomRepository.prototype.attachEvents = function()
 {
     this.client.on('room:join', this.onJoinRoom);
     this.client.on('room:leave', this.onLeaveRoom);
-    this.client.on('room:game:start', this.onGameStart);
-    this.client.on('room:game:end', this.onGameEnd);
+    this.client.on('room:launch:start', this.forwardEvent);
+    this.client.on('room:launch:cancel', this.forwardEvent);
+    this.client.on('room:game:start', this.forwardEvent);
+    this.client.on('room:game:end', this.forwardEvent);
     this.client.on('player:ready', this.onPlayerReady);
     this.client.on('player:profile', this.onPlayerProfile);
 };
@@ -42,8 +43,10 @@ RoomRepository.prototype.detachEvents = function()
 {
     this.client.off('room:join', this.onJoinRoom);
     this.client.off('room:leave', this.onLeaveRoom);
-    this.client.off('room:game:start', this.onGameStart);
-    this.client.off('room:game:end', this.onGameEnd);
+    this.client.off('room:launch:start', this.forwardEvent);
+    this.client.off('room:launch:cancel', this.forwardEvent);
+    this.client.off('room:game:start', this.forwardEvent);
+    this.client.off('room:game:end', this.forwardEvent);
     this.client.off('player:ready', this.onPlayerReady);
     this.client.off('player:profile', this.onPlayerProfile);
 };
@@ -204,23 +207,13 @@ RoomRepository.prototype.onPlayerProfile = function(e)
 };
 
 /**
- * On room game start
+ * Forward event
  *
  * @param {Event} e
  */
-RoomRepository.prototype.onGameStart = function(e)
+RoomRepository.prototype.forwardEvent = function(e)
 {
-    this.emit('room:game:start');
-};
-
-/**
- * On room game end
- *
- * @param {Event} e
- */
-RoomRepository.prototype.onGameEnd = function(e)
-{
-    this.emit('room:game:end');
+    this.emit(e.type, e.detail);
 };
 
 /**

@@ -4,8 +4,9 @@
  * @param {Object} $scope
  * @param {Object} $window
  * @param {SocketClient} client
+ * @param {PhotoBooth} photoBooth
  */
-function CurvytronController($scope, $window, client)
+function CurvytronController($scope, $window, client, photoBooth)
 {
     this.$scope   = $scope;
     this.$window  = $window;
