@@ -26,6 +26,10 @@ function GameController($scope, $routeParams, $location, client, repository, sou
     this.layout         = null;
     this.compressor     = new Compressor();
 
+    this.photoBooth.clear();
+    this.photoBooth.attach(document.getElementById('death-cam'));
+    this.photoBooth.start();
+
     // Binding
     this.onLatency       = this.onLatency.bind(this);
     this.onGameStart     = this.onGameStart.bind(this);
@@ -68,8 +72,6 @@ function GameController($scope, $routeParams, $location, client, repository, sou
     this.$scope.goBack      = false;
     this.$scope.pictures    = this.photoBooth.pictures;
     this.$scope.slide       = 0;
-
-    this.photoBooth.attach(document.getElementById('death-cam'));
 
     this.repository.start();
     this.loadGame(this.repository.room);
@@ -149,7 +151,6 @@ GameController.prototype.loadGame = function(room)
     this.layout = new Layout();
 
     this.game.bonusManager.on('load', this.onAssetsLoaded);
-    this.photoBooth.start();
 
     var avatar;
 
@@ -511,6 +512,8 @@ GameController.prototype.onExit = function()
     this.killLog.clear();
     this.sound.stop('win');
     this.offDestroy();
+    this.photoBooth.stop();
+    this.photoBooth.detach();
     this.photoBooth.clear();
     this.layout.destroy();
     this.close();

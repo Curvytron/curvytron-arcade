@@ -8,9 +8,10 @@
  */
 function CurvytronController($scope, $window, client, photoBooth)
 {
-    this.$scope   = $scope;
-    this.$window  = $window;
-    this.client   = client;
+    this.$scope     = $scope;
+    this.$window    = $window;
+    this.client     = client;
+    this.photoBooth = photoBooth;
 
     // Bind
     this.onConnect    = this.onConnect.bind(this);
@@ -24,6 +25,8 @@ function CurvytronController($scope, $window, client, photoBooth)
 
     this.client.on('connected', this.onConnect);
     this.client.on('disconnected', this.onDisconnect);
+
+    this.photoBooth.stop();
 }
 
 /**

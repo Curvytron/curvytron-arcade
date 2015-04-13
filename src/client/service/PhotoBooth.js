@@ -18,6 +18,7 @@ function PhotoBooth()
 
     this.video.addEventListener('loadedmetadata', this.onLoadedMetaData);
     this.video.addEventListener('canplay', this.onCanPlay);
+    this.video.addEventListener('error', this.onError);
 
     this.start();
 }
@@ -67,7 +68,22 @@ PhotoBooth.prototype.start = function()
 
     if (!this.streaming) {
         this.streaming = true;
-        navigator.getUserMedia(this.getConstraints(), this.onVideo, this.onError);
+        if (this.video.src) {
+            this.video.play();
+        } else {
+            navigator.getUserMedia(this.getConstraints(), this.onVideo, this.onError);
+        }
+    }
+};
+
+/**
+ * Stop
+ */
+PhotoBooth.prototype.stop = function()
+{
+    if (this.streaming) {
+        this.streaming = false;
+        this.video.pause();
     }
 };
 
@@ -148,9 +164,11 @@ PhotoBooth.prototype.detach = function()
     }
 };
 
+/**
+ * Clear
+ */
 PhotoBooth.prototype.clear = function()
 {
-    this.detach();
     this.pictures.length = 0;
 };
 
