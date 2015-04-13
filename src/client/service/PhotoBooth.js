@@ -72,16 +72,6 @@ PhotoBooth.prototype.start = function()
 };
 
 /**
- * Stop video stream
- */
-PhotoBooth.prototype.stop = function()
-{
-    if (this.streaming) {
-        this.video.stop();
-    }
-};
-
-/**
  * Get constraints
  *
  * @return {Object}
@@ -157,6 +147,13 @@ PhotoBooth.prototype.detach = function()
         this.parent = null;
     }
 };
+
+PhotoBooth.prototype.clear = function()
+{
+    this.detach();
+    this.pictures.length = 0;
+};
+
 /**
  * On error
  *

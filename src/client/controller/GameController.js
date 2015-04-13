@@ -511,7 +511,7 @@ GameController.prototype.onExit = function()
     this.killLog.clear();
     this.sound.stop('win');
     this.offDestroy();
-    this.photoBooth.detach();
+    this.photoBooth.clear();
     this.layout.destroy();
     this.close();
 };
@@ -625,13 +625,7 @@ GameController.prototype.backToRoom = function()
  */
 GameController.prototype.takePicture = function()
 {
-    var photo = this.photoBooth;
-
     this.photoBooth.takePicture();
-    setTimeout(function () { photo.takePicture(); }, 100);
-    setTimeout(function () { photo.takePicture(); }, 200);
-    setTimeout(function () { photo.takePicture(); }, 300);
-    setTimeout(function () { photo.takePicture(); }, 400);
 };
 
 /**
