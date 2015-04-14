@@ -5,6 +5,7 @@ function PhotoBooth()
 {
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
+    this.enabled   = photobooth;
     this.video     = document.createElement('video');
     this.canvas    = new Canvas(this.width, this.height);
     this.streaming = false;
@@ -38,6 +39,13 @@ PhotoBooth.prototype.width = 640;
 PhotoBooth.prototype.height = 480;
 
 /**
+ * Enabled
+ *
+ * @type {Boolean}
+ */
+PhotoBooth.prototype.enabled = true;
+
+/**
  * Take a picture
  *
  * @return {Resource}
@@ -62,15 +70,16 @@ PhotoBooth.prototype.takePicture = function()
  */
 PhotoBooth.prototype.start = function()
 {
-    if (typeof(navigator.getUserMedia) === 'undefined' || !navigator.getUserMedia) {
-        return this.onError({name: 'User media api supported.'});
-    }
+    if (!this.enabled) { return; }
 
     if (!this.streaming) {
         this.streaming = true;
         if (this.video.src) {
             this.video.play();
         } else {
+            if (typeof(navigator.getUserMedia) === 'undefined' || !navigator.getUserMedia) {
+                return this.onError({name: 'User media api supported.'});
+            }
             navigator.getUserMedia(this.getConstraints(), this.onVideo, this.onError);
         }
     }
@@ -147,6 +156,8 @@ PhotoBooth.prototype.onCanPlay = function(event)
  */
 PhotoBooth.prototype.attach = function(element)
 {
+    if (!this.enabled) { return; }
+
     if (element && !this.parent) {
         this.parent = element;
         this.parent.appendChild(this.video);
@@ -180,5 +191,6 @@ PhotoBooth.prototype.clear = function()
 PhotoBooth.prototype.onError = function(error)
 {
     this.streaming = false;
+    this.enabled   = false;
     console.error('The following error occured: %s',  error.name);
 };

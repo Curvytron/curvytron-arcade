@@ -1,5 +1,6 @@
 {
     "port": 8080,
+    "photobooth": true,
     "inspector": {
         "enabled": false,
         "host": "127.0.0.1",

@@ -87,7 +87,10 @@ gulp.task('front-min', function(){
 });
 
 gulp.task('index', function() {
+    var photoboothConfig = 'var photobooth = ' + ((typeof(config.photobooth) === 'undefined' || config.photobooth) ? 'true' : 'false') + ';';
+
     return gulp.src('./src/client/views/index.html')
+        .pipe(replace('<!-- Photobooth -->', photoboothConfig))
         .pipe(htmlmin({collapseWhitespace: true}))
         .pipe(gulp.dest('./web'));
 });

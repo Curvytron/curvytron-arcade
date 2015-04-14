@@ -74,7 +74,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div class="deaths">
+                    <div class="deaths" ng-if="photoBooth">
                         <div class="slider" style="width: {{ pictures.length * 650 }}px; margin-left: {{ - (slide - 0.5) * 650 }}px;">
                             <img ng-src="{{ picture }}" ng-repeat="(index, picture) in pictures" ng-class="{active: slide === index}">
                         </div>

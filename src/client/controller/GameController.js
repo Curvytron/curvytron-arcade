@@ -26,10 +26,6 @@ function GameController($scope, $routeParams, $location, client, repository, sou
     this.layout         = null;
     this.compressor     = new Compressor();
 
-    this.photoBooth.clear();
-    this.photoBooth.attach(document.getElementById('death-cam'));
-    this.photoBooth.start();
-
     // Binding
     this.onLatency       = this.onLatency.bind(this);
     this.onGameStart     = this.onGameStart.bind(this);
@@ -70,9 +66,12 @@ function GameController($scope, $routeParams, $location, client, repository, sou
     this.$scope.gameWinner  = null;
     this.$scope.latency     = 0;
     this.$scope.goBack      = false;
+    this.$scope.photoBooth  = this.photoBooth.enabled;
     this.$scope.pictures    = this.photoBooth.pictures;
     this.$scope.slide       = 0;
 
+    this.photoBooth.clear();
+    this.photoBooth.start();
     this.repository.start();
     this.loadGame(this.repository.room);
 }
@@ -164,6 +163,7 @@ GameController.prototype.loadGame = function(room)
         }
     }
 
+    this.photoBooth.attach(document.getElementById('death-cam'));
     this.game.fps.setElement(document.getElementById('fps'));
 
     // Hydrate scope:
