@@ -10,10 +10,12 @@ function RoomController()
     this.room        = new Room('Arcade', this);
     this.clients     = new Collection();
     this.socketGroup = new SocketGroup(this.clients);
+    this.launching   = false;
 
     this.onPlayerJoin  = this.onPlayerJoin.bind(this);
     this.onPlayerLeave = this.onPlayerLeave.bind(this);
     this.onGame        = this.onGame.bind(this);
+    this.launch        = this.launch.bind(this);
 
     this.callbacks = {
         onPlayerAdd: function (data) { controller.onPlayerAdd(this, data[0], data[1]); },
@@ -120,6 +122,8 @@ RoomController.prototype.onClientAdd = function(client)
  */
 RoomController.prototype.onClientRemove = function(client)
 {
+    this.cancelLaunch();
+
     if (this.room.game) {
         this.room.game.controller.detach(client);
     }
@@ -212,8 +216,10 @@ RoomController.prototype.onReady = function(client, data, callback)
         callback({success: true, ready: player.ready});
         this.socketGroup.addEvent('player:ready', { player: player.id, ready: player.ready });
 
-        if (this.room.isReady()) {
-            this.room.newGame();
+        if (this.launching) {
+            this.cancelLaunch();
+        } else {
+            this.startLaunch();
         }
     } else {
         callback({success: false, error: 'Player with id "' + data.player + '" not found'});
@@ -259,6 +265,7 @@ RoomController.prototype.onProfile = function(client, data, callback)
  */
 RoomController.prototype.onPlayerJoin = function(data)
 {
+    this.cancelLaunch();
     this.socketGroup.addEvent('room:join', {player: data.player.serialize()});
 };
 
@@ -269,10 +276,43 @@ RoomController.prototype.onPlayerJoin = function(data)
  */
 RoomController.prototype.onPlayerLeave = function(data)
 {
+    this.cancelLaunch();
     this.socketGroup.addEvent('room:leave', {player: data.player.id});
+    this.startLaunch();
+};
 
-    if (this.room.isReady()) {
+/**
+ * Start launch
+ */
+RoomController.prototype.startLaunch = function()
+{
+    if (this.room.isReady() && !this.launching) {
+        this.launching = setTimeout(this.launch, this.room.launchTime);
+        this.socketGroup.addEvent('room:launch:start');
+    }
+};
+
+/**
+ * Launch
+ */
+RoomController.prototype.launch = function()
+{
+    if (this.launching) {
+        clearTimeout(this.launching);
+        this.launching = false;
         this.room.newGame();
+    }
+};
+
+/**
+ * Cancel launch
+ */
+RoomController.prototype.cancelLaunch = function()
+{
+    if (this.launching) {
+        clearTimeout(this.launching);
+        this.launching = false;
+        this.socketGroup.addEvent('room:launch:cancel');
     }
 };
 

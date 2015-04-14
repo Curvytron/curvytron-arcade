@@ -7,20 +7,23 @@
  * @param {RoomRepository} repository
  * @param {SoundManager} sound
  * @param {killLog} killLog
+ * @param {PhotoBooth} photoBooth
  */
-function GameController($scope, $routeParams, $location, client, repository, sound, killLog)
+function GameController($scope, $routeParams, $location, client, repository, sound, killLog, photoBooth)
 {
     this.$scope         = $scope;
     this.$location      = $location;
     this.client         = client;
     this.repository     = repository;
     this.killLog        = killLog;
+    this.photoBooth     = photoBooth;
     this.sound          = sound;
     this.room           = null;
     this.game           = null;
     this.warmupInterval = null;
     this.assetsLoaded   = false;
     this.setup          = false;
+    this.layout         = null;
     this.compressor     = new Compressor();
 
     // Binding
@@ -46,9 +49,11 @@ function GameController($scope, $routeParams, $location, client, repository, sou
     this.onEnd           = this.onEnd.bind(this);
     this.onExit          = this.onExit.bind(this);
     this.updateBorders   = this.updateBorders.bind(this);
-    this.countGoBack       = this.countGoBack.bind(this);
-    this.listenGoBack      = this.listenGoBack.bind(this);
+    this.countGoBack     = this.countGoBack.bind(this);
+    this.listenGoBack    = this.listenGoBack.bind(this);
     this.onGamepadButton = this.onGamepadButton.bind(this);
+    this.onGamepadAxis   = this.onGamepadAxis.bind(this);
+    this.takePicture     = this.takePicture.bind(this);
 
     // Hydrate scope:
     this.$scope.sortorder   = '-score';
@@ -61,7 +66,12 @@ function GameController($scope, $routeParams, $location, client, repository, sou
     this.$scope.gameWinner  = null;
     this.$scope.latency     = 0;
     this.$scope.goBack      = false;
+    this.$scope.photoBooth  = this.photoBooth.enabled;
+    this.$scope.pictures    = this.photoBooth.pictures;
+    this.$scope.slide       = 0;
 
+    this.photoBooth.clear();
+    this.photoBooth.start();
     this.repository.start();
     this.loadGame(this.repository.room);
 }
@@ -72,6 +82,13 @@ function GameController($scope, $routeParams, $location, client, repository, sou
  * @type {Number}
  */
 GameController.prototype.goBackTime = 5000;
+
+/**
+ * Death cam delay
+ *
+ * @type {Number}
+ */
+GameController.prototype.deathCamDelay = 800;
 
 /**
  * Attach socket Events
@@ -128,8 +145,9 @@ GameController.prototype.loadGame = function(room)
 {
     this.offDestroy = this.$scope.$on('$destroy', this.onExit);
 
-    this.room = room;
-    this.game = room.newGame();
+    this.room   = room;
+    this.game   = room.newGame();
+    this.layout = new Layout();
 
     this.game.bonusManager.on('load', this.onAssetsLoaded);
 
@@ -145,6 +163,7 @@ GameController.prototype.loadGame = function(room)
         }
     }
 
+    this.photoBooth.attach(document.getElementById('death-cam'));
     this.game.fps.setElement(document.getElementById('fps'));
 
     // Hydrate scope:
@@ -363,6 +382,8 @@ GameController.prototype.onDie = function(e)
         this.killLog.logDeath(avatar, killer);
         this.applyScope();
         this.sound.play('death');
+
+        setTimeout(this.takePicture, this.deathCamDelay);
     }
 };
 
@@ -491,6 +512,10 @@ GameController.prototype.onExit = function()
     this.killLog.clear();
     this.sound.stop('win');
     this.offDestroy();
+    this.photoBooth.stop();
+    this.photoBooth.detach();
+    this.photoBooth.clear();
+    this.layout.destroy();
     this.close();
 };
 
@@ -536,6 +561,8 @@ GameController.prototype.setGoBack = function()
     this.$scope.goBack  = this.goBackTime/1000;
     this.goBackInterval = setInterval(this.countGoBack, 1000);
     this.goBackTimeout  = setTimeout(this.listenGoBack, this.goBackTime);
+
+    gamepadListener.on('gamepad:axis', this.onGamepadAxis);
 };
 
 /**
@@ -562,6 +589,18 @@ GameController.prototype.listenGoBack = function()
 };
 
 /**
+ * On gamepad axis change
+ *
+ * @param {Event} e
+ */
+GameController.prototype.onGamepadAxis = function(e)
+{
+    if (e.detail.value) {
+        this.slidePictures(e.detail.value > 0);
+    }
+};
+
+/**
  * On gamepad button pressed
  *
  * @param {Event} e
@@ -569,6 +608,7 @@ GameController.prototype.listenGoBack = function()
 GameController.prototype.onGamepadButton = function(e)
 {
     if (this.$scope.goBack) {
+        gamepadListener.off('gamepad:axis', this.onGamepadAxis);
         gamepadListener.off('gamepad:button', this.onGamepadButton);
         this.backToRoom();
     }
@@ -580,6 +620,29 @@ GameController.prototype.onGamepadButton = function(e)
 GameController.prototype.backToRoom = function()
 {
     this.$location.path(this.room.url);
+    this.applyScope();
+};
+
+/**
+ * Take a picture of the players
+ */
+GameController.prototype.takePicture = function()
+{
+    this.photoBooth.takePicture();
+};
+
+/**
+ * Slide pictures
+ *
+ * @param {Boolean} forward
+ */
+GameController.prototype.slidePictures = function(forward)
+{
+    var max   = this.photoBooth.pictures.length - 1,
+        slide = Math.max(0, Math.min(this.$scope.slide + (forward ? 1 : -1), max));
+
+    this.$scope.slide = slide;
+
     this.applyScope();
 };
 

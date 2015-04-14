@@ -7,10 +7,11 @@ curvytronApp.service('SocketClient', SocketClient);
 curvytronApp.service('RoomRepository', ['SocketClient', RoomRepository]);
 curvytronApp.service('SoundManager', SoundManager);
 curvytronApp.service('KillLog', KillLog);
+curvytronApp.service('PhotoBooth', PhotoBooth);
 
 curvytronApp.controller(
     'CurvytronController',
-    ['$scope', '$window', 'SocketClient', CurvytronController]
+    ['$scope', '$window', 'SocketClient', 'PhotoBooth', CurvytronController]
 );
 curvytronApp.controller(
     'RoomController',
@@ -18,15 +19,14 @@ curvytronApp.controller(
 );
 curvytronApp.controller(
     'GameController',
-    ['$scope', '$routeParams', '$location', 'SocketClient', 'RoomRepository', 'SoundManager', 'KillLog', GameController]
+    ['$scope', '$routeParams', '$location', 'SocketClient', 'RoomRepository', 'SoundManager', 'KillLog', 'PhotoBooth', GameController]
 );
 curvytronApp.controller(
     'KillLogController',
     ['$scope', 'KillLog', KillLogController]
 );
 
-curvytronApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
-    $locationProvider.html5Mode(true);
+curvytronApp.config(['$routeProvider', '$locationProvider', function($routeProvider) {
     $routeProvider
         .when('/', {
             templateUrl: 'js/views/rooms/detail.html',

@@ -4,12 +4,14 @@
  * @param {Object} $scope
  * @param {Object} $window
  * @param {SocketClient} client
+ * @param {PhotoBooth} photoBooth
  */
-function CurvytronController($scope, $window, client)
+function CurvytronController($scope, $window, client, photoBooth)
 {
-    this.$scope   = $scope;
-    this.$window  = $window;
-    this.client   = client;
+    this.$scope     = $scope;
+    this.$window    = $window;
+    this.client     = client;
+    this.photoBooth = photoBooth;
 
     // Bind
     this.onConnect    = this.onConnect.bind(this);
@@ -23,6 +25,8 @@ function CurvytronController($scope, $window, client)
 
     this.client.on('connected', this.onConnect);
     this.client.on('disconnected', this.onDisconnect);
+
+    this.photoBooth.stop();
 }
 
 /**
