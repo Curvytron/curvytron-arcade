@@ -84,13 +84,6 @@ function GameController($scope, $routeParams, $location, client, repository, sou
 GameController.prototype.goBackTime = 5000;
 
 /**
- * Death cam delay
- *
- * @type {Number}
- */
-GameController.prototype.deathCamDelay = 800;
-
-/**
  * Attach socket Events
  */
 GameController.prototype.attachSocketEvents = function()
@@ -382,8 +375,6 @@ GameController.prototype.onDie = function(e)
         this.killLog.logDeath(avatar, killer);
         this.applyScope();
         this.sound.play('death');
-
-        setTimeout(this.takePicture, this.deathCamDelay);
     }
 };
 
@@ -432,6 +423,7 @@ GameController.prototype.onRoundNew = function(e)
 GameController.prototype.onRoundEnd = function(e)
 {
     this.game.endRound();
+    this.takePicture();
 };
 
 /**
