@@ -196,17 +196,20 @@
         }
 
         #spectators {
+            display: none;
             width: 75px;
             text-align: right;
         }
 
         #fps {
+            display: none;
             width: 60px;
             text-align: right;
             margin-left: 5px;
         }
 
         #ping {
+            display: none;
             width: 52px;
             text-align: right;
             margin-left: 5px;
@@ -232,14 +235,16 @@
                 display: block;
                 text-align: left;
                 font-size: 14px;
+                line-height: 32px;
                 text-transform: none;
                 cursor: pointer;
-                @include opacity(50);
-                @include transition(all 0.2s ease);
+                text-align: center;
 
-                &:hover {
-                    @include opacity(100);
-                    text-decoration: none;
+                .logo-elao {
+                    width: 32px;
+                    height: 32px;
+                    margin-left: 2px;
+                    vertical-align: bottom;
                 }
             }
         }

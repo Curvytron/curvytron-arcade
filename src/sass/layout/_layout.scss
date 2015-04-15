@@ -156,13 +156,20 @@ footer {
 }
 
 .elao {
-  position: fixed;
-  bottom: 15px;
-  left: 0;
-  right: 0;
+  position: absolute;
+  bottom: 50px;
+  right: 50px;
   text-align: center;
-  color: #BBB;
-  font-size: 16px;
+  color: #888;
+  font-size: 24px;
+  line-height: 80px;
+
+  .logo-elao {
+    width: 80px;
+    height: 80px;
+    margin-left: 5px;
+    vertical-align: bottom;
+  }
 }
 
 body.game-mode {
